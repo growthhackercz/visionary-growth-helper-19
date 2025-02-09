@@ -168,12 +168,14 @@ const Habits = () => {
     try {
       const { error } = await supabase
         .from('habit_progress')
-        .insert([{
+        .upsert([{
           habit_id: habitId,
           date,
           status: 'success',
           value: 1,
-        }]);
+        }], {
+          onConflict: 'habit_id,date'
+        });
 
       if (error) throw error;
 
@@ -501,4 +503,3 @@ const Habits = () => {
 };
 
 export default Habits;
-
