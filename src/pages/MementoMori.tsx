@@ -36,12 +36,12 @@ const MementoMori = () => {
 
   const renderYearMarkers = () => {
     const markers = [];
-    for (let i = 0; i < YEARS_TO_SHOW; i += YEARS_PER_GROUP) {
+    for (let i = YEARS_PER_GROUP; i <= YEARS_TO_SHOW; i += YEARS_PER_GROUP) {
       markers.push(
         <div
           key={`year-${i}`}
           className="absolute -left-8 text-gray-400 text-sm"
-          style={{ top: `${(i * 24) + 12}px` }}
+          style={{ top: `${((i - YEARS_PER_GROUP) * 24) + 12}px` }}
         >
           {i}
         </div>
