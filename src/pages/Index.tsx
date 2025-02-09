@@ -14,6 +14,8 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { DailyVerse } from "@/components/DailyVerse";
+import { BibleReading } from "@/components/BibleReading";
 
 const Index = () => {
   const { toast } = useToast();
@@ -201,6 +203,9 @@ const Index = () => {
   return (
     <Layout>
       <div className="space-y-8 animate-fade-in">
+        <DailyVerse />
+        <BibleReading />
+        
         <button
           onClick={() => setShowQuickAdd(!showQuickAdd)}
           className="fixed bottom-6 right-6 p-4 rounded-full bg-primary text-white shadow-lg hover:bg-primary/90 transition-colors z-50"
