@@ -9,10 +9,19 @@ import { useToast } from "@/hooks/use-toast";
 const Index = () => {
   const { toast } = useToast();
   
+  const motivationalPhrases = [
+    "Každý malý krok vpřed je vítězství. Jsi na dobré cestě!",
+    "Dnes je skvělý den na osobní růst. Věřím v tebe!",
+    "Tvé úsilí se vyplácí. Pokračuj dál!",
+    "Změna začíná malými kroky. A ty jich děláš spoustu!",
+    "Jsi blíž svým cílům než včera. Skvělá práce!"
+  ];
+
   const showDailyMotivation = () => {
+    const randomPhrase = motivationalPhrases[Math.floor(Math.random() * motivationalPhrases.length)];
     toast({
       title: "Dnešní rada od Flowíka",
-      description: "Každý malý krok vpřed je vítězství. Jsi na dobré cestě!",
+      description: randomPhrase,
       duration: 5000,
     });
   };
@@ -120,3 +129,4 @@ const Index = () => {
 }
 
 export default Index;
+
