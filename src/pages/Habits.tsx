@@ -1,4 +1,3 @@
-
 import { Layout } from "@/components/Layout";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -24,6 +23,7 @@ import { Form, FormField, FormItem, FormControl } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
+import { HabitTree } from "@/components/habits/HabitTree";
 
 const categoryIcons: Record<string, React.ReactNode> = {
   Health: <Heart className="w-4 h-4" />,
@@ -67,7 +67,6 @@ const Habits = () => {
     },
   });
 
-  // Fetch habits data with the updated query
   const { data: habits, refetch: refetchHabits } = useQuery({
     queryKey: ['habits'],
     queryFn: async () => {
@@ -94,7 +93,6 @@ const Habits = () => {
     },
   });
 
-  // Fetch categories for the form
   const { data: categories } = useQuery({
     queryKey: ['categories'],
     queryFn: async () => {
@@ -107,7 +105,6 @@ const Habits = () => {
     },
   });
 
-  // Fetch daily ratings
   const { data: dailyRatings, refetch: refetchRatings } = useQuery({
     queryKey: ['daily_ratings'],
     queryFn: async () => {
@@ -222,7 +219,6 @@ const Habits = () => {
     }
   };
 
-  // Calculate daily summary status
   const getDailySummaryStatus = (date: string, habitsData: any[]) => {
     if (!habitsData?.length) return null;
     
@@ -250,16 +246,27 @@ const Habits = () => {
     return 'success';
   };
 
+  const today = format(new Date(), 'dd.MM.yyyy');
+  const totalHabits = habits?.length || 0;
+  const completedHabits = habits?.filter(habit => 
+    habit.habit_progress?.some(p => 
+      format(new Date(p.date), 'dd.MM.yyyy') === today && 
+      p.status === 'success'
+    )
+  ).length || 0;
+
+  const maxStreak = Math.max(...(habits?.map(h => h.current_streak || 0) || [0]));
+
   return (
     <Layout>
       <div className="space-y-8 animate-fade-in">
         <section className="relative text-center space-y-4 bg-gradient-to-r from-purple-500/20 to-blue-500/20 p-8 rounded-lg backdrop-blur-lg">
           <h1 className="text-4xl font-bold text-white font-['Caveat']">Buzer lístek</h1>
           <p className="text-xl text-white/80 font-['Caveat']">Sleduj své každodenní návyky a staň se lepším člověkem</p>
-          <img 
-            src="/elephant-rider.png" 
-            alt="Slon s jezdcem"
-            className="mx-auto w-32 h-32 object-contain animate-bounce-slow"
+          <HabitTree 
+            totalHabits={totalHabits}
+            completedHabits={completedHabits}
+            streakCount={maxStreak}
           />
         </section>
 
@@ -520,4 +527,3 @@ const Habits = () => {
 };
 
 export default Habits;
-
