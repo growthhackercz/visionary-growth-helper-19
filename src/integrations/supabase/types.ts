@@ -88,6 +88,30 @@ export type Database = {
           },
         ]
       }
+      daily_ratings: {
+        Row: {
+          created_at: string
+          date: string
+          id: string
+          notes: string | null
+          rating: number
+        }
+        Insert: {
+          created_at?: string
+          date: string
+          id?: string
+          notes?: string | null
+          rating: number
+        }
+        Update: {
+          created_at?: string
+          date?: string
+          id?: string
+          notes?: string | null
+          rating?: number
+        }
+        Relationships: []
+      }
       daily_verses: {
         Row: {
           created_at: string
@@ -249,6 +273,7 @@ export type Database = {
           category_id: string
           created_at: string
           current_streak: number
+          frequency: string
           id: string
           name: string
           notes: string | null
@@ -260,6 +285,7 @@ export type Database = {
           category_id: string
           created_at?: string
           current_streak?: number
+          frequency?: string
           id?: string
           name: string
           notes?: string | null
@@ -271,6 +297,7 @@ export type Database = {
           category_id?: string
           created_at?: string
           current_streak?: number
+          frequency?: string
           id?: string
           name?: string
           notes?: string | null
