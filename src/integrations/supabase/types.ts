@@ -350,6 +350,7 @@ export type Database = {
           id: string
           source: string
           thoughts: string
+          user_id: string | null
           week_end: string
           week_start: string
         }
@@ -358,6 +359,7 @@ export type Database = {
           id?: string
           source?: string
           thoughts: string
+          user_id?: string | null
           week_end: string
           week_start: string
         }
@@ -366,6 +368,7 @@ export type Database = {
           id?: string
           source?: string
           thoughts?: string
+          user_id?: string | null
           week_end?: string
           week_start?: string
         }
