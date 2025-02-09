@@ -181,12 +181,37 @@ export type Database = {
         }
         Relationships: []
       }
+      habit_categories: {
+        Row: {
+          color: string
+          created_at: string
+          icon: string
+          id: string
+          name: string
+        }
+        Insert: {
+          color: string
+          created_at?: string
+          icon: string
+          id?: string
+          name: string
+        }
+        Update: {
+          color?: string
+          created_at?: string
+          icon?: string
+          id?: string
+          name?: string
+        }
+        Relationships: []
+      }
       habit_progress: {
         Row: {
           created_at: string
           date: string
           habit_id: string
           id: string
+          notes: string | null
           status: string | null
           value: number | null
         }
@@ -195,6 +220,7 @@ export type Database = {
           date: string
           habit_id: string
           id?: string
+          notes?: string | null
           status?: string | null
           value?: number | null
         }
@@ -203,6 +229,7 @@ export type Database = {
           date?: string
           habit_id?: string
           id?: string
+          notes?: string | null
           status?: string | null
           value?: number | null
         }
@@ -218,23 +245,35 @@ export type Database = {
       }
       habits: {
         Row: {
+          best_streak: number
+          category: string
           created_at: string
+          current_streak: number
           id: string
           name: string
+          notes: string | null
           target_unit: string
           target_value: number
         }
         Insert: {
+          best_streak?: number
+          category?: string
           created_at?: string
+          current_streak?: number
           id?: string
           name: string
+          notes?: string | null
           target_unit: string
           target_value: number
         }
         Update: {
+          best_streak?: number
+          category?: string
           created_at?: string
+          current_streak?: number
           id?: string
           name?: string
+          notes?: string | null
           target_unit?: string
           target_value?: number
         }

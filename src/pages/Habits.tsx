@@ -2,7 +2,7 @@
 import { Layout } from "@/components/Layout";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
+import { Plus, Heart, User, Briefcase, Book, Compass } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -15,6 +15,14 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+
+const categoryIcons: Record<string, React.ReactNode> = {
+  Health: <Heart className="w-4 h-4" />,
+  Personal: <User className="w-4 h-4" />,
+  Work: <Briefcase className="w-4 h-4" />,
+  Learning: <Book className="w-4 h-4" />,
+  Spiritual: <Compass className="w-4 h-4" />,
+};
 
 const Habits = () => {
   const { toast } = useToast();
@@ -34,7 +42,13 @@ const Habits = () => {
           habit_progress (
             date,
             value,
-            status
+            status,
+            notes
+          ),
+          habit_categories (
+            name,
+            color,
+            icon
           )
         `)
         .order('created_at');
@@ -111,9 +125,16 @@ const Habits = () => {
                     className="text-white font-['Caveat'] text-lg text-center"
                   >
                     <div className="space-y-2">
-                      <div>{habit.name}</div>
-                      <div className="text-primary/80 text-sm">
-                        Min: {habit.target_value} {habit.target_unit}
+                      <div className="flex items-center justify-center gap-2">
+                        {categoryIcons[habit.category]}
+                        <span>{habit.name}</span>
+                      </div>
+                      <div className="text-primary/80 text-sm space-y-1">
+                        <div>Min: {habit.target_value} {habit.target_unit}</div>
+                        <div className="text-green-500">Série: {habit.current_streak} dní</div>
+                        {habit.best_streak > 0 && (
+                          <div className="text-yellow-500">Nejlepší: {habit.best_streak} dní</div>
+                        )}
                       </div>
                     </div>
                   </TableHead>
@@ -139,9 +160,16 @@ const Habits = () => {
                     return (
                       <TableCell 
                         key={`${habit.id}-${date}`}
-                        className={`font-['Caveat'] text-lg text-center ${getStatusColor(progress?.status)}`}
+                        className={`font-['Caveat'] text-lg text-center relative group ${getStatusColor(progress?.status)}`}
                       >
-                        {progress?.value || "—"}
+                        <div>
+                          {progress?.value || "—"}
+                          {progress?.notes && (
+                            <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 p-2 bg-black/90 rounded text-sm text-white whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity">
+                              {progress.notes}
+                            </div>
+                          )}
+                        </div>
                       </TableCell>
                     );
                   })}
