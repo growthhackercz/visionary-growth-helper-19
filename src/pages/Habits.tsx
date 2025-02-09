@@ -2,7 +2,7 @@
 import { Layout } from "@/components/Layout";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Plus, Heart, User, Briefcase, Book, Compass, X } from "lucide-react";
+import { Plus, Heart, User, Briefcase, Book, Compass } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -253,25 +253,37 @@ const Habits = () => {
   return (
     <Layout>
       <div className="space-y-8 animate-fade-in">
-        <section className="text-center space-y-4">
-          <h1 className="text-3xl font-bold text-white font-['Caveat']">Buzer lístek</h1>
-          <p className="text-lg text-white/80 font-['Caveat']">Sledujte své každodenní návyky</p>
+        <section className="relative text-center space-y-4 bg-gradient-to-r from-purple-500/20 to-blue-500/20 p-8 rounded-lg backdrop-blur-lg">
+          <h1 className="text-4xl font-bold text-white font-['Caveat']">Buzer lístek</h1>
+          <p className="text-xl text-white/80 font-['Caveat']">Sleduj své každodenní návyky a staň se lepším člověkem</p>
           <img 
             src="/elephant-rider.png" 
             alt="Slon s jezdcem"
-            className="mx-auto w-32 h-32 object-contain"
+            className="mx-auto w-32 h-32 object-contain animate-bounce-slow"
           />
         </section>
 
-        <div className="flex justify-end mb-4">
+        <div className="flex justify-between items-center mb-4">
+          <div className="flex gap-2">
+            {Object.entries(categoryIcons).map(([category, icon]) => (
+              <div 
+                key={category}
+                className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 text-white/80"
+              >
+                {icon}
+                <span className="text-sm">{category}</span>
+              </div>
+            ))}
+          </div>
+          
           <Dialog open={isAddHabitOpen} onOpenChange={setIsAddHabitOpen}>
             <DialogTrigger asChild>
-              <Button>
+              <Button className="bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600">
                 <Plus className="mr-2" size={20} />
                 Přidat návyk
               </Button>
             </DialogTrigger>
-            <DialogContent>
+            <DialogContent className="sm:max-w-[425px]">
               <DialogHeader>
                 <DialogTitle>Přidat nový návyk</DialogTitle>
               </DialogHeader>
@@ -386,7 +398,12 @@ const Habits = () => {
                     >
                       Zrušit
                     </Button>
-                    <Button type="submit">Přidat návyk</Button>
+                    <Button 
+                      type="submit"
+                      className="bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600"
+                    >
+                      Přidat návyk
+                    </Button>
                   </div>
                 </form>
               </Form>
@@ -394,7 +411,7 @@ const Habits = () => {
           </Dialog>
         </div>
 
-        <Card className="p-6 backdrop-blur-lg bg-card border-white/10">
+        <Card className="p-6 backdrop-blur-lg bg-card/30 border-white/10">
           <Table>
             <TableHeader>
               <TableRow className="hover:bg-transparent border-b border-white/10">
@@ -456,7 +473,7 @@ const Habits = () => {
                             <Button
                               size="sm"
                               variant="ghost"
-                              className="text-white/60 hover:text-white"
+                              className="text-white/60 hover:text-white hover:bg-white/10"
                               onClick={() => handleHabitComplete(habit.id, date)}
                             >
                               Splnit
@@ -503,3 +520,4 @@ const Habits = () => {
 };
 
 export default Habits;
+
