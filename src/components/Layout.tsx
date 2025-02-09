@@ -1,6 +1,7 @@
 
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "./AppSidebar";
+import { PomodoroTimer } from "./PomodoroTimer";
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -16,6 +17,7 @@ export function Layout({ children }: LayoutProps) {
             {children}
           </div>
         </main>
+        <PomodoroTimer />
       </div>
     </SidebarProvider>
   );
