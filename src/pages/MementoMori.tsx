@@ -41,7 +41,7 @@ const MementoMori = () => {
         <div
           key={`year-${i}`}
           className="absolute -left-8 text-gray-400 text-sm"
-          style={{ top: `${((i - YEARS_PER_GROUP) * 24) + 12}px` }}
+          style={{ top: `${(i * 24) - 12}px` }}
         >
           {i}
         </div>
