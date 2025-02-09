@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
@@ -43,11 +43,31 @@ export const MoodTracker = () => {
   const [selectedNeed, setSelectedNeed] = useState("");
   const [notes, setNotes] = useState("");
   const [moodData, setMoodData] = useState<MoodData[]>([]);
+  const [session, setSession] = useState<any>(null);
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+      if (session) fetchMoodData();
+    });
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+      if (session) fetchMoodData();
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
 
   const fetchMoodData = async () => {
+    if (!session?.user?.id) return;
+
     const { data, error } = await supabase
       .from('moods')
       .select('*')
+      .eq('user_id', session.user.id)
       .order('date', { ascending: true });
 
     if (error) {
@@ -59,6 +79,11 @@ export const MoodTracker = () => {
   };
 
   const handleSubmit = async () => {
+    if (!session?.user?.id) {
+      toast.error("Nejste přihlášen/a");
+      return;
+    }
+
     if (!selectedMood) {
       toast.error("Prosím vyberte náladu");
       return;
@@ -67,6 +92,7 @@ export const MoodTracker = () => {
     const { error } = await supabase
       .from('moods')
       .insert({
+        user_id: session.user.id,
         mood_type: selectedMood,
         need_type: selectedNeed || null,
         notes: notes || null,

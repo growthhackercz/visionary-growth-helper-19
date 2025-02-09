@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
@@ -25,7 +25,7 @@ interface SleepData {
   date: string;
   hours_slept: number;
   quality_rating: number;
-  morning_mood: string;
+  morning_mood: string | null;
   notes: string | null;
 }
 
@@ -36,11 +36,31 @@ export const SleepTracker = () => {
   const [selectedMood, setSelectedMood] = useState("");
   const [notes, setNotes] = useState("");
   const [sleepData, setSleepData] = useState<SleepData[]>([]);
+  const [session, setSession] = useState<any>(null);
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+      if (session) fetchSleepData();
+    });
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+      if (session) fetchSleepData();
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
 
   const fetchSleepData = async () => {
+    if (!session?.user?.id) return;
+
     const { data, error } = await supabase
       .from('sleep_records')
       .select('*')
+      .eq('user_id', session.user.id)
       .order('date', { ascending: true });
 
     if (error) {
@@ -52,6 +72,11 @@ export const SleepTracker = () => {
   };
 
   const handleSubmit = async () => {
+    if (!session?.user?.id) {
+      toast.error("Nejste přihlášen/a");
+      return;
+    }
+
     if (!hoursSlept || !selectedMood) {
       toast.error("Prosím vyplňte všechna povinná pole");
       return;
@@ -60,6 +85,7 @@ export const SleepTracker = () => {
     const { error } = await supabase
       .from('sleep_records')
       .insert({
+        user_id: session.user.id,
         hours_slept: parseFloat(hoursSlept),
         quality_rating: qualityRating,
         morning_mood: selectedMood,
