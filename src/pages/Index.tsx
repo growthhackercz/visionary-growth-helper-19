@@ -1,4 +1,3 @@
-
 import { Layout } from "@/components/Layout";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -7,6 +6,8 @@ import { Link } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { useState, useEffect } from "react";
 import { Progress } from "@/components/ui/progress";
+import { useIsMobile } from "@/hooks/use-mobile";
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line } from 'recharts';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -16,6 +17,7 @@ import {
 
 const Index = () => {
   const { toast } = useToast();
+  const isMobile = useIsMobile();
   const [dailyQuote, setDailyQuote] = useState("");
   const [progressValues, setProgressValues] = useState({
     habits: 60,
@@ -23,10 +25,10 @@ const Index = () => {
     meditation: 75,
     gratitude: 30
   });
-  
+
   const [userName, setUserName] = useState("uživateli");
   const [showQuickAdd, setShowQuickAdd] = useState(false);
-  
+
   const motivationalPhrases = [
     "Každý malý krok vpřed je vítězství. Jsi na dobré cestě!",
     "Dnes je skvělý den na osobní růst. Věřím v tebe!",
@@ -40,9 +42,18 @@ const Index = () => {
     "Tvá cesta k lepšímu já začíná právě teď.",
   ];
 
+  const weeklyData = [
+    { den: 'Po', splněno: 8, body: 120 },
+    { den: 'Út', splněno: 6, body: 90 },
+    { den: 'St', splněno: 7, body: 105 },
+    { den: 'Čt', splněno: 9, body: 135 },
+    { den: 'Pá', splněno: 5, body: 75 },
+    { den: 'So', splněno: 4, body: 60 },
+    { den: 'Ne', splněno: 7, body: 105 },
+  ];
+
   useEffect(() => {
     setDailyQuote(motivationalPhrases[Math.floor(Math.random() * motivationalPhrases.length)]);
-    // Načtení uloženého jména
     const savedName = localStorage.getItem("userName");
     if (savedName) {
       setUserName(savedName);
@@ -139,10 +150,57 @@ const Index = () => {
     }
   ];
 
+  const renderStatisticsCharts = () => (
+    <div className={`grid ${isMobile ? 'grid-cols-1' : 'grid-cols-2'} gap-6 mt-8`}>
+      <Card className="p-6 backdrop-blur-lg bg-card">
+        <h3 className="text-lg font-semibold mb-4">Týdenní aktivita</h3>
+        <div className="h-[300px] w-full">
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart data={weeklyData}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#444" />
+              <XAxis dataKey="den" stroke="#fff" />
+              <YAxis stroke="#fff" />
+              <Tooltip 
+                contentStyle={{ 
+                  backgroundColor: '#333',
+                  border: '1px solid #666',
+                  borderRadius: '8px',
+                  color: '#fff'
+                }}
+              />
+              <Bar dataKey="splněno" fill="#ea384c" />
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+      </Card>
+
+      <Card className="p-6 backdrop-blur-lg bg-card">
+        <h3 className="text-lg font-semibold mb-4">Body za týden</h3>
+        <div className="h-[300px] w-full">
+          <ResponsiveContainer width="100%" height="100%">
+            <LineChart data={weeklyData}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#444" />
+              <XAxis dataKey="den" stroke="#fff" />
+              <YAxis stroke="#fff" />
+              <Tooltip 
+                contentStyle={{ 
+                  backgroundColor: '#333',
+                  border: '1px solid #666',
+                  borderRadius: '8px',
+                  color: '#fff'
+                }}
+              />
+              <Line type="monotone" dataKey="body" stroke="#ea384c" />
+            </LineChart>
+          </ResponsiveContainer>
+        </div>
+      </Card>
+    </div>
+  );
+
   return (
     <Layout>
       <div className="space-y-8 animate-fade-in">
-        {/* Quick Actions Button */}
         <button
           onClick={() => setShowQuickAdd(!showQuickAdd)}
           className="fixed bottom-6 right-6 p-4 rounded-full bg-primary text-white shadow-lg hover:bg-primary/90 transition-colors z-50"
@@ -150,9 +208,8 @@ const Index = () => {
           <Plus className="w-6 h-6" />
         </button>
 
-        {/* Quick Actions Menu */}
         {showQuickAdd && (
-          <div className="fixed bottom-24 right-6 bg-card rounded-lg shadow-lg p-4 space-y-2 z-50 animate-fade-in">
+          <div className="fixed bottom-24 right-6 bg-card rounded-lg shadow-lg p-4 space-y-2 z-50 animate-fade-in w-64 max-w-[calc(100vw-3rem)]">
             {categories.map((category, index) => (
               <button
                 key={index}
@@ -160,17 +217,16 @@ const Index = () => {
                 className={`flex items-center gap-2 w-full p-2 rounded-lg hover:bg-accent transition-colors ${category.color}`}
               >
                 <category.icon className="w-4 h-4" />
-                <span>Přidat {category.title.toLowerCase()}</span>
+                <span className="text-sm">{category.title}</span>
               </button>
             ))}
           </div>
         )}
 
-        {/* Header Section */}
-        <section className="text-center space-y-4">
+        <section className="text-center space-y-4 px-4">
           <div className="relative inline-block">
             <div className="flex items-center justify-center gap-4">
-              <h1 className="text-3xl font-bold bg-gradient-to-r from-white to-white/60 bg-clip-text text-transparent">
+              <h1 className={`${isMobile ? 'text-2xl' : 'text-3xl'} font-bold bg-gradient-to-r from-white to-white/60 bg-clip-text text-transparent`}>
                 Vítej zpět, {userName}
               </h1>
               <DropdownMenu>
@@ -209,20 +265,18 @@ const Index = () => {
               />
             </div>
           </div>
-          <p className="text-lg text-white/80 max-w-2xl mx-auto">{dailyQuote}</p>
+          <p className={`${isMobile ? 'text-base' : 'text-lg'} text-white/80 max-w-2xl mx-auto`}>{dailyQuote}</p>
         </section>
 
-        {/* Achievements Section */}
-        <div className="flex items-center justify-center gap-4 flex-wrap">
+        <div className="flex items-center justify-center gap-3 flex-wrap px-4">
           {achievements.map((achievement, index) => (
             <div 
               key={index} 
-              className={`group relative flex items-center gap-2 ${achievement.bgColor} px-4 py-2 rounded-full transition-transform hover:scale-105 cursor-pointer`}
+              className={`group relative flex items-center gap-2 ${achievement.bgColor} px-3 py-2 rounded-full transition-transform hover:scale-105 cursor-pointer ${isMobile ? 'text-sm' : ''}`}
             >
-              <achievement.icon className={`w-5 h-5 ${achievement.color}`} />
+              <achievement.icon className={`${isMobile ? 'w-4 h-4' : 'w-5 h-5'} ${achievement.color}`} />
               <span className="text-white">{achievement.text}</span>
               
-              {/* Tooltip */}
               <div className="absolute -top-12 left-1/2 transform -translate-x-1/2 bg-black/80 text-white text-sm px-3 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
                 {achievement.description}
               </div>
@@ -230,9 +284,8 @@ const Index = () => {
           ))}
         </div>
 
-        {/* Daily Challenge Card */}
-        <Card className="p-6 backdrop-blur-lg bg-yellow-500/5 border-yellow-500/20 hover:bg-yellow-500/10 transition-colors">
-          <div className="flex items-center justify-between">
+        <Card className="p-6 backdrop-blur-lg bg-yellow-500/5 border-yellow-500/20 hover:bg-yellow-500/10 transition-colors mx-4">
+          <div className="flex items-center justify-between flex-wrap gap-4">
             <div className="flex items-center gap-3">
               <Trophy className="w-6 h-6 text-yellow-500" />
               <div>
@@ -247,8 +300,9 @@ const Index = () => {
           </div>
         </Card>
 
-        {/* Main Categories Grid */}
-        <section className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        {renderStatisticsCharts()}
+
+        <section className={`grid gap-6 ${isMobile ? 'grid-cols-1' : 'md:grid-cols-2 lg:grid-cols-3'} px-4`}>
           {categories.map((category, index) => (
             <Link to={category.link} key={index}>
               <Card className={`relative p-6 space-y-4 backdrop-blur-lg bg-card border-white/10 hover:${category.bgColor} transition-colors group`}>
