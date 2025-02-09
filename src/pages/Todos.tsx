@@ -1,7 +1,7 @@
 
 import { Layout } from "@/components/Layout";
 import { Card } from "@/components/ui/card";
-import { Plus, Clock, Circle, CheckCircle } from "lucide-react";
+import { Plus, Circle, CheckCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
@@ -83,14 +83,22 @@ const Todos = () => {
           </div>
 
           <div className="relative">
-            <div className="absolute left-[27px] top-4 bottom-4 w-0.5 bg-white/10"></div>
+            <div className="absolute left-[27px] top-4 bottom-4 w-0.5 bg-gradient-to-b from-purple-400/50 via-blue-400/50 to-purple-400/50"></div>
             
             <div className="space-y-8">
               {timeSlots.map((slot, index) => (
-                <div key={slot.id} className="relative">
+                <div 
+                  key={slot.id} 
+                  className={cn(
+                    "relative group transition-all duration-500 ease-in-out",
+                    "hover:-translate-y-1"
+                  )}
+                >
                   <div className={cn(
-                    "ml-14 p-6 rounded-3xl transition-all duration-300 transform hover:scale-102",
+                    "ml-14 p-6 rounded-full transition-all duration-300",
                     "backdrop-blur-sm border-2",
+                    "shadow-lg hover:shadow-xl",
+                    "transform hover:scale-105",
                     slot.completed ? "bg-secondary/30 border-white/20" : "bg-secondary/50 hover:bg-secondary/60",
                     slot.color === "red" && "border-red-400/50",
                     slot.color === "blue" && "border-blue-400/50",
@@ -100,10 +108,10 @@ const Todos = () => {
                   )}>
                     <div className="flex items-center gap-4">
                       <div className="absolute left-0 -translate-x-[15px] flex items-center gap-2">
-                        <span className="text-sm text-white/60 w-12 text-right">{slot.time}</span>
+                        <span className="text-sm text-white/60 w-12 text-right font-mono">{slot.time}</span>
                         {slot.completed ? (
                           <CheckCircle className={cn(
-                            "w-6 h-6",
+                            "w-8 h-8 transition-transform duration-300 group-hover:scale-110",
                             slot.color === "red" && "text-red-400",
                             slot.color === "blue" && "text-blue-400",
                             slot.color === "purple" && "text-purple-400",
@@ -112,7 +120,8 @@ const Todos = () => {
                           )} />
                         ) : (
                           <Circle className={cn(
-                            "w-6 h-6",
+                            "w-8 h-8 transition-transform duration-300 group-hover:scale-110",
+                            "animate-pulse",
                             slot.color === "red" && "text-red-400/50",
                             slot.color === "blue" && "text-blue-400/50",
                             slot.color === "purple" && "text-purple-400/50",
@@ -123,7 +132,7 @@ const Todos = () => {
                       </div>
                       <div className="space-y-1">
                         <h3 className={cn(
-                          "font-medium text-lg",
+                          "font-medium text-lg transition-colors duration-300",
                           slot.completed ? "text-white/50 line-through" : "text-white"
                         )}>
                           {slot.title}
@@ -135,11 +144,13 @@ const Todos = () => {
                   {index < timeSlots.length - 1 && (
                     <div className={cn(
                       "absolute left-[27px] top-14 bottom-[-28px] w-0.5",
-                      slot.color === "red" && "bg-red-400/20",
-                      slot.color === "blue" && "bg-blue-400/20",
-                      slot.color === "purple" && "bg-purple-400/20",
-                      slot.color === "green" && "bg-green-400/20",
-                      slot.color === "orange" && "bg-orange-400/20"
+                      "transition-all duration-300 group-hover:opacity-100",
+                      "animate-pulse",
+                      slot.color === "red" && "bg-gradient-to-b from-red-400/50 to-transparent",
+                      slot.color === "blue" && "bg-gradient-to-b from-blue-400/50 to-transparent",
+                      slot.color === "purple" && "bg-gradient-to-b from-purple-400/50 to-transparent",
+                      slot.color === "green" && "bg-gradient-to-b from-green-400/50 to-transparent",
+                      slot.color === "orange" && "bg-gradient-to-b from-orange-400/50 to-transparent"
                     )} />
                   )}
                 </div>
