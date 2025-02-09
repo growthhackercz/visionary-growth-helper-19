@@ -10,15 +10,15 @@ const Todos = () => {
   useEffect(() => {
     const loadFont = async () => {
       const font = new FontFace(
-        'Kalam',
-        'url(https://fonts.gstatic.com/s/kalam/v16/YA9dr0Wd4kDdMthROCc.woff2)'
+        'Caveat',
+        'url(https://fonts.gstatic.com/s/caveat/v10/WnznHAc5bAfYB2QRah7pcpNvOx-pjRV6eIipZz5Kmgq3s84t.woff2)'
       );
       try {
         await font.load();
         document.fonts.add(font);
-        console.log('Kalam font loaded successfully');
+        console.log('Caveat font loaded successfully');
       } catch (error) {
-        console.error('Error loading Kalam font:', error);
+        console.error('Error loading Caveat font:', error);
       }
     };
     loadFont();
@@ -86,17 +86,17 @@ const Todos = () => {
   return (
     <Layout>
       <div className="space-y-8 animate-fade-in">
-        <section className="text-center space-y-4 font-['Kalam']">
+        <section className="text-center space-y-4 font-['Caveat']">
           <h1 className="text-4xl font-bold text-white">To-Do-All</h1>
           <p className="text-xl text-white/80">Vaše cesta dnem</p>
         </section>
 
         <Card className="p-8 space-y-6 backdrop-blur-lg bg-card/30 border-white/5">
           <div className="flex justify-between items-center mb-8">
-            <h2 className="text-2xl font-['Kalam'] text-white">Dnešní milníky</h2>
+            <h2 className="text-2xl font-['Caveat'] text-white">Dnešní milníky</h2>
             <Button 
               variant="outline" 
-              className="border-dashed hover:border-solid font-['Kalam'] text-lg"
+              className="border-dashed hover:border-solid font-['Caveat'] text-lg"
             >
               <Plus className="mr-2" size={24} />
               Přidat milník
@@ -120,17 +120,17 @@ const Todos = () => {
                     "backdrop-blur-sm border-2",
                     "shadow-lg hover:shadow-xl",
                     "transform hover:scale-105",
-                    "bg-white/5",
+                    "bg-gradient-to-r from-white/5 to-transparent",
                     slot.completed ? "border-white/10" : "hover:bg-white/10",
-                    slot.color === "red" && "border-red-400/30",
-                    slot.color === "blue" && "border-blue-400/30",
-                    slot.color === "purple" && "border-purple-400/30",
-                    slot.color === "green" && "border-green-400/30",
-                    slot.color === "orange" && "border-orange-400/30"
+                    slot.color === "red" && "border-red-400/30 hover:border-red-400/50",
+                    slot.color === "blue" && "border-blue-400/30 hover:border-blue-400/50",
+                    slot.color === "purple" && "border-purple-400/30 hover:border-purple-400/50",
+                    slot.color === "green" && "border-green-400/30 hover:border-green-400/50",
+                    slot.color === "orange" && "border-orange-400/30 hover:border-orange-400/50"
                   )}>
                     <div className="flex items-center gap-4">
                       <div className="absolute left-0 -translate-x-[15px] flex items-center gap-2">
-                        <span className="text-base text-white/60 w-12 text-right font-['Kalam']">{slot.time}</span>
+                        <span className="text-base text-white/60 w-12 text-right font-['Caveat']">{slot.time}</span>
                         {slot.completed ? (
                           <CheckCircle className={cn(
                             "w-8 h-8 transition-transform duration-300 group-hover:scale-110",
@@ -144,17 +144,17 @@ const Todos = () => {
                           <Circle className={cn(
                             "w-8 h-8 transition-transform duration-300 group-hover:scale-110",
                             "animate-pulse",
-                            slot.color === "red" && "text-red-400/40",
-                            slot.color === "blue" && "text-blue-400/40",
-                            slot.color === "purple" && "text-purple-400/40",
-                            slot.color === "green" && "text-green-400/40",
-                            slot.color === "orange" && "text-orange-400/40"
+                            slot.color === "red" && "text-red-400/40 hover:text-red-400/70",
+                            slot.color === "blue" && "text-blue-400/40 hover:text-blue-400/70",
+                            slot.color === "purple" && "text-purple-400/40 hover:text-purple-400/70",
+                            slot.color === "green" && "text-green-400/40 hover:text-green-400/70",
+                            slot.color === "orange" && "text-orange-400/40 hover:text-orange-400/70"
                           )} />
                         )}
                       </div>
                       <div className="space-y-1">
                         <h3 className={cn(
-                          "font-['Kalam'] text-xl transition-colors duration-300",
+                          "font-['Caveat'] text-2xl transition-colors duration-300",
                           slot.completed ? "text-white/40 line-through" : "text-white"
                         )}>
                           {slot.title}
