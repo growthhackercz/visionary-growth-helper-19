@@ -31,7 +31,7 @@ const Habits = () => {
     return format(date, 'dd.MM.yyyy');
   });
 
-  // Fetch habits data
+  // Fetch habits data with the updated query
   const { data: habits } = useQuery({
     queryKey: ['habits'],
     queryFn: async () => {
@@ -45,7 +45,7 @@ const Habits = () => {
             status,
             notes
           ),
-          habit_categories (
+          habit_categories:category_id (
             name,
             color,
             icon
@@ -126,7 +126,7 @@ const Habits = () => {
                   >
                     <div className="space-y-2">
                       <div className="flex items-center justify-center gap-2">
-                        {categoryIcons[habit.category]}
+                        {categoryIcons[habit.habit_categories.name]}
                         <span>{habit.name}</span>
                       </div>
                       <div className="text-primary/80 text-sm space-y-1">

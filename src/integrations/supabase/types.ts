@@ -246,7 +246,7 @@ export type Database = {
       habits: {
         Row: {
           best_streak: number
-          category: string
+          category_id: string
           created_at: string
           current_streak: number
           id: string
@@ -257,7 +257,7 @@ export type Database = {
         }
         Insert: {
           best_streak?: number
-          category?: string
+          category_id: string
           created_at?: string
           current_streak?: number
           id?: string
@@ -268,7 +268,7 @@ export type Database = {
         }
         Update: {
           best_streak?: number
-          category?: string
+          category_id?: string
           created_at?: string
           current_streak?: number
           id?: string
@@ -277,7 +277,15 @@ export type Database = {
           target_unit?: string
           target_value?: number
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "habits_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "habit_categories"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       weekly_bible_readings: {
         Row: {
