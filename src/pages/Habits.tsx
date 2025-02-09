@@ -2,8 +2,11 @@
 import { Layout } from "@/components/Layout";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Plus, Trophy, Clock } from "lucide-react";
+import { Plus } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
+import { format, subDays } from "date-fns";
 import {
   Table,
   TableBody,
@@ -15,58 +18,31 @@ import {
 
 const Habits = () => {
   const { toast } = useToast();
+  const last14Days = Array.from({ length: 14 }, (_, i) => {
+    const date = subDays(new Date(), i);
+    return format(date, 'dd.MM.yyyy');
+  });
 
-  // Mockup data - later this will come from the database
-  const habits = [
-    {
-      id: 1,
-      name: "Ranní cvičení",
-      streak: 3,
-      targetValue: 20,
-      targetUnit: "minut",
-      weekProgress: [
-        { day: "Po", value: 25, status: "success" },
-        { day: "Út", value: 15, status: "partial" },
-        { day: "St", value: 20, status: "success" },
-        { day: "Čt", value: 0, status: "failed" },
-        { day: "Pá", value: null, status: null },
-        { day: "So", value: null, status: null },
-        { day: "Ne", value: null, status: null },
-      ],
+  // Fetch habits data
+  const { data: habits } = useQuery({
+    queryKey: ['habits'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('habits')
+        .select(`
+          *,
+          habit_progress (
+            date,
+            value,
+            status
+          )
+        `)
+        .order('created_at');
+      
+      if (error) throw error;
+      return data || [];
     },
-    {
-      id: 2,
-      name: "Meditace",
-      streak: 5,
-      targetValue: 10,
-      targetUnit: "minut",
-      weekProgress: [
-        { day: "Po", value: 15, status: "success" },
-        { day: "Út", value: 10, status: "success" },
-        { day: "St", value: 10, status: "success" },
-        { day: "Čt", value: 8, status: "partial" },
-        { day: "Pá", value: null, status: null },
-        { day: "So", value: null, status: null },
-        { day: "Ne", value: null, status: null },
-      ],
-    },
-    {
-      id: 3,
-      name: "Čtení",
-      streak: 2,
-      targetValue: 30,
-      targetUnit: "stran",
-      weekProgress: [
-        { day: "Po", value: 35, status: "success" },
-        { day: "Út", value: 20, status: "partial" },
-        { day: "St", value: 0, status: "failed" },
-        { day: "Čt", value: 30, status: "success" },
-        { day: "Pá", value: null, status: null },
-        { day: "So", value: null, status: null },
-        { day: "Ne", value: null, status: null },
-      ],
-    },
-  ];
+  });
 
   const getStatusColor = (status: string | null) => {
     switch (status) {
@@ -89,6 +65,26 @@ const Habits = () => {
     });
   };
 
+  // Calculate daily summary status
+  const getDailySummaryStatus = (date: string, habitsData: any[]) => {
+    if (!habitsData?.length) return null;
+    
+    const dayProgress = habitsData.map(habit => {
+      const progress = habit.habit_progress?.find((p: any) => 
+        format(new Date(p.date), 'dd.MM.yyyy') === date
+      );
+      return progress?.status;
+    });
+
+    if (dayProgress.some(status => status === 'failed' || status === null)) {
+      return 'failed';
+    }
+    if (dayProgress.some(status => status === 'partial')) {
+      return 'partial';
+    }
+    return 'success';
+  };
+
   return (
     <Layout>
       <div className="space-y-8 animate-fade-in">
@@ -108,49 +104,52 @@ const Habits = () => {
           <Table>
             <TableHeader>
               <TableRow className="hover:bg-transparent border-b border-white/10">
-                <TableHead className="text-white font-['Caveat'] text-lg">Návyk</TableHead>
-                <TableHead className="text-white font-['Caveat'] text-lg">
-                  <div className="flex items-center gap-2">
-                    <Trophy size={16} className="text-primary" />
-                    Série
-                  </div>
-                </TableHead>
-                <TableHead className="text-white font-['Caveat'] text-lg">
-                  <div className="flex items-center gap-2">
-                    <Clock size={16} className="text-primary" />
-                    Cíl
-                  </div>
-                </TableHead>
-                {["Po", "Út", "St", "Čt", "Pá", "So", "Ne"].map((day) => (
-                  <TableHead key={day} className="text-white font-['Caveat'] text-lg">
-                    {day}
+                <TableHead className="text-white font-['Caveat'] text-lg">Datum</TableHead>
+                {habits?.map((habit) => (
+                  <TableHead 
+                    key={habit.id} 
+                    className="text-white font-['Caveat'] text-lg text-center"
+                  >
+                    <div className="space-y-2">
+                      <div>{habit.name}</div>
+                      <div className="text-primary/80 text-sm">
+                        Min: {habit.target_value} {habit.target_unit}
+                      </div>
+                    </div>
                   </TableHead>
                 ))}
+                <TableHead className="text-white font-['Caveat'] text-lg text-center">
+                  Denní souhrn
+                </TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {habits.map((habit) => (
+              {last14Days.map((date) => (
                 <TableRow 
-                  key={habit.id} 
+                  key={date}
                   className="hover:bg-white/5 transition-colors border-b border-white/10"
                 >
                   <TableCell className="font-medium text-white font-['Caveat'] text-lg">
-                    {habit.name}
+                    {date}
                   </TableCell>
-                  <TableCell className="text-primary font-['Caveat'] text-lg">
-                    {habit.streak} dní
+                  {habits?.map((habit) => {
+                    const progress = habit.habit_progress?.find((p: any) => 
+                      format(new Date(p.date), 'dd.MM.yyyy') === date
+                    );
+                    return (
+                      <TableCell 
+                        key={`${habit.id}-${date}`}
+                        className={`font-['Caveat'] text-lg text-center ${getStatusColor(progress?.status)}`}
+                      >
+                        {progress?.value || "—"}
+                      </TableCell>
+                    );
+                  })}
+                  <TableCell 
+                    className={`font-['Caveat'] text-lg text-center ${getStatusColor(getDailySummaryStatus(date, habits))}`}
+                  >
+                    •
                   </TableCell>
-                  <TableCell className="text-white/80 font-['Caveat'] text-lg">
-                    {habit.targetValue} {habit.targetUnit}
-                  </TableCell>
-                  {habit.weekProgress.map((day, index) => (
-                    <TableCell 
-                      key={index}
-                      className={`font-['Caveat'] text-lg text-center ${getStatusColor(day.status)}`}
-                    >
-                      {day.value !== null ? `${day.value}` : "—"}
-                    </TableCell>
-                  ))}
                 </TableRow>
               ))}
             </TableBody>

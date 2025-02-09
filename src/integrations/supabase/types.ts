@@ -181,6 +181,65 @@ export type Database = {
         }
         Relationships: []
       }
+      habit_progress: {
+        Row: {
+          created_at: string
+          date: string
+          habit_id: string
+          id: string
+          status: string | null
+          value: number | null
+        }
+        Insert: {
+          created_at?: string
+          date: string
+          habit_id: string
+          id?: string
+          status?: string | null
+          value?: number | null
+        }
+        Update: {
+          created_at?: string
+          date?: string
+          habit_id?: string
+          id?: string
+          status?: string | null
+          value?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "habit_progress_habit_id_fkey"
+            columns: ["habit_id"]
+            isOneToOne: false
+            referencedRelation: "habits"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      habits: {
+        Row: {
+          created_at: string
+          id: string
+          name: string
+          target_unit: string
+          target_value: number
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          name: string
+          target_unit: string
+          target_value: number
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          name?: string
+          target_unit?: string
+          target_value?: number
+        }
+        Relationships: []
+      }
       weekly_bible_readings: {
         Row: {
           bible_books: string[]
