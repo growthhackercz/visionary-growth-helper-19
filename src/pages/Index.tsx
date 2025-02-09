@@ -8,6 +8,7 @@ import { useState, useEffect } from "react";
 import { Progress } from "@/components/ui/progress";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line } from 'recharts';
+import { cs } from 'date-fns/locale';
 import {
   DropdownMenu,
   DropdownMenuContent,
