@@ -2,11 +2,17 @@
 import { Layout } from "@/components/Layout";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Brain, CheckSquare, ListTodo, Calendar, Heart, Trophy, Star, Medal, Sparkles, ArrowRight } from "lucide-react";
+import { Brain, CheckSquare, ListTodo, Calendar, Heart, Trophy, Star, Medal, Sparkles, ArrowRight, Plus, Settings } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { useState, useEffect } from "react";
 import { Progress } from "@/components/ui/progress";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 const Index = () => {
   const { toast } = useToast();
@@ -17,6 +23,9 @@ const Index = () => {
     meditation: 75,
     gratitude: 30
   });
+  
+  const [userName, setUserName] = useState("uživateli");
+  const [showQuickAdd, setShowQuickAdd] = useState(false);
   
   const motivationalPhrases = [
     "Každý malý krok vpřed je vítězství. Jsi na dobré cestě!",
@@ -33,6 +42,11 @@ const Index = () => {
 
   useEffect(() => {
     setDailyQuote(motivationalPhrases[Math.floor(Math.random() * motivationalPhrases.length)]);
+    // Načtení uloženého jména
+    const savedName = localStorage.getItem("userName");
+    if (savedName) {
+      setUserName(savedName);
+    }
   }, []);
 
   const showDailyMotivation = () => {
@@ -44,10 +58,37 @@ const Index = () => {
     });
   };
 
+  const handleQuickAdd = (type: string) => {
+    toast({
+      title: "Rychlé přidání",
+      description: `Přidáno do sekce ${type}`,
+      duration: 3000,
+    });
+    setShowQuickAdd(false);
+  };
+
   const achievements = [
-    { icon: Medal, text: "7 dní v řadě", color: "text-primary", bgColor: "bg-primary/10" },
-    { icon: Star, text: "150 bodů celkem", color: "text-yellow-500", bgColor: "bg-yellow-500/10" },
-    { icon: Sparkles, text: "3 splněné výzvy", color: "text-blue-400", bgColor: "bg-blue-400/10" },
+    { 
+      icon: Medal, 
+      text: "7 dní v řadě", 
+      color: "text-primary", 
+      bgColor: "bg-primary/10",
+      description: "Pokračuj v sérii!"
+    },
+    { 
+      icon: Star, 
+      text: "150 bodů celkem", 
+      color: "text-yellow-500", 
+      bgColor: "bg-yellow-500/10",
+      description: "+15 bodů tento týden"
+    },
+    { 
+      icon: Sparkles, 
+      text: "3 splněné výzvy", 
+      color: "text-blue-400", 
+      bgColor: "bg-blue-400/10",
+      description: "Nová výzva za 2 dny"
+    },
   ];
 
   const categories = [
@@ -101,12 +142,62 @@ const Index = () => {
   return (
     <Layout>
       <div className="space-y-8 animate-fade-in">
+        {/* Quick Actions Button */}
+        <button
+          onClick={() => setShowQuickAdd(!showQuickAdd)}
+          className="fixed bottom-6 right-6 p-4 rounded-full bg-primary text-white shadow-lg hover:bg-primary/90 transition-colors z-50"
+        >
+          <Plus className="w-6 h-6" />
+        </button>
+
+        {/* Quick Actions Menu */}
+        {showQuickAdd && (
+          <div className="fixed bottom-24 right-6 bg-card rounded-lg shadow-lg p-4 space-y-2 z-50 animate-fade-in">
+            {categories.map((category, index) => (
+              <button
+                key={index}
+                onClick={() => handleQuickAdd(category.title)}
+                className={`flex items-center gap-2 w-full p-2 rounded-lg hover:bg-accent transition-colors ${category.color}`}
+              >
+                <category.icon className="w-4 h-4" />
+                <span>Přidat {category.title.toLowerCase()}</span>
+              </button>
+            ))}
+          </div>
+        )}
+
         {/* Header Section */}
         <section className="text-center space-y-4">
           <div className="relative inline-block">
-            <h1 className="text-3xl font-bold bg-gradient-to-r from-white to-white/60 bg-clip-text text-transparent">
-              Vítejte zpět
-            </h1>
+            <div className="flex items-center justify-center gap-4">
+              <h1 className="text-3xl font-bold bg-gradient-to-r from-white to-white/60 bg-clip-text text-transparent">
+                Vítej zpět, {userName}
+              </h1>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="icon">
+                    <Settings className="w-4 h-4" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-56">
+                  <DropdownMenuItem
+                    onClick={() => {
+                      const newName = prompt("Zadejte své jméno:");
+                      if (newName) {
+                        setUserName(newName);
+                        localStorage.setItem("userName", newName);
+                        toast({
+                          title: "Jméno bylo změněno",
+                          description: `Vítej, ${newName}!`,
+                        });
+                      }
+                    }}
+                  >
+                    Změnit jméno
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
             <div 
               className="absolute -right-16 -top-12 w-24 h-24 bg-primary/10 rounded-full flex items-center justify-center hover:scale-110 transition-transform cursor-pointer group" 
               onClick={showDailyMotivation}
@@ -126,10 +217,15 @@ const Index = () => {
           {achievements.map((achievement, index) => (
             <div 
               key={index} 
-              className={`flex items-center gap-2 ${achievement.bgColor} px-4 py-2 rounded-full transition-transform hover:scale-105`}
+              className={`group relative flex items-center gap-2 ${achievement.bgColor} px-4 py-2 rounded-full transition-transform hover:scale-105 cursor-pointer`}
             >
               <achievement.icon className={`w-5 h-5 ${achievement.color}`} />
               <span className="text-white">{achievement.text}</span>
+              
+              {/* Tooltip */}
+              <div className="absolute -top-12 left-1/2 transform -translate-x-1/2 bg-black/80 text-white text-sm px-3 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+                {achievement.description}
+              </div>
             </div>
           ))}
         </div>
@@ -155,7 +251,7 @@ const Index = () => {
         <section className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {categories.map((category, index) => (
             <Link to={category.link} key={index}>
-              <Card className={`p-6 space-y-4 backdrop-blur-lg bg-card border-white/10 hover:${category.bgColor} transition-colors group`}>
+              <Card className={`relative p-6 space-y-4 backdrop-blur-lg bg-card border-white/10 hover:${category.bgColor} transition-colors group`}>
                 <div className="flex items-center gap-3">
                   <category.icon className={`w-6 h-6 ${category.color} group-hover:scale-110 transition-transform`} />
                   <h2 className="text-xl font-semibold text-white">{category.title}</h2>
