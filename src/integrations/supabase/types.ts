@@ -344,6 +344,51 @@ export type Database = {
         }
         Relationships: []
       }
+      prayer_categories: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          name: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          name: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          name?: string
+        }
+        Relationships: []
+      }
+      prayer_tips: {
+        Row: {
+          category: string
+          created_at: string
+          day_of_year: number
+          id: string
+          tip: string
+        }
+        Insert: {
+          category: string
+          created_at?: string
+          day_of_year: number
+          id?: string
+          tip: string
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          day_of_year?: number
+          id?: string
+          tip?: string
+        }
+        Relationships: []
+      }
       sleep_records: {
         Row: {
           created_at: string
