@@ -10,6 +10,7 @@ import { DashboardStats } from "@/components/dashboard/DashboardStats";
 import { QuickActions } from "@/components/dashboard/QuickActions";
 import { DailyChallenge } from "@/components/dashboard/DailyChallenge";
 import { DashboardCategories } from "@/components/dashboard/DashboardCategories";
+import { DashboardCalendar } from "@/components/dashboard/DashboardCalendar";
 import { Brain, CheckSquare, ListTodo, Calendar, Heart } from "lucide-react";
 
 const Index = () => {
@@ -116,6 +117,8 @@ const Index = () => {
         <DailyChallenge />
 
         <DashboardStats weeklyData={weeklyData} />
+
+        <DashboardCalendar />
 
         <DashboardCategories 
           progressValues={progressValues}
