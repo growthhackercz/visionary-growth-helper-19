@@ -314,6 +314,69 @@ export type Database = {
           },
         ]
       }
+      moods: {
+        Row: {
+          created_at: string
+          date: string
+          id: string
+          mood_type: string
+          need_type: string | null
+          notes: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          date?: string
+          id?: string
+          mood_type: string
+          need_type?: string | null
+          notes?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          date?: string
+          id?: string
+          mood_type?: string
+          need_type?: string | null
+          notes?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      sleep_records: {
+        Row: {
+          created_at: string
+          date: string
+          hours_slept: number
+          id: string
+          morning_mood: string | null
+          notes: string | null
+          quality_rating: number | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          date?: string
+          hours_slept: number
+          id?: string
+          morning_mood?: string | null
+          notes?: string | null
+          quality_rating?: number | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          date?: string
+          hours_slept?: number
+          id?: string
+          morning_mood?: string | null
+          notes?: string | null
+          quality_rating?: number | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       weekly_bible_readings: {
         Row: {
           bible_books: string[]

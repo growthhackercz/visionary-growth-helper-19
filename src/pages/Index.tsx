@@ -11,6 +11,8 @@ import { QuickActions } from "@/components/dashboard/QuickActions";
 import { DailyChallenge } from "@/components/dashboard/DailyChallenge";
 import { DashboardCategories } from "@/components/dashboard/DashboardCategories";
 import { DashboardCalendar } from "@/components/dashboard/DashboardCalendar";
+import { MoodTracker } from "@/components/dashboard/MoodTracker";
+import { SleepTracker } from "@/components/dashboard/SleepTracker";
 import { Brain, CheckSquare, ListTodo, Calendar, Heart } from "lucide-react";
 
 const Index = () => {
@@ -115,6 +117,11 @@ const Index = () => {
         />
 
         <DailyChallenge />
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <MoodTracker />
+          <SleepTracker />
+        </div>
 
         <DashboardStats weeklyData={weeklyData} />
 
