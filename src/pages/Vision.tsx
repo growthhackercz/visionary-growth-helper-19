@@ -3,7 +3,7 @@ import { Layout } from "@/components/Layout";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { Upload, Quote, Star, Target, Heart, Sparkles, ArrowRight } from "lucide-react";
+import { Upload, Quote, Star, Target, Heart, Sparkles, ArrowRight, Trophy } from "lucide-react";
 import { useState } from "react";
 
 const Vision = () => {
