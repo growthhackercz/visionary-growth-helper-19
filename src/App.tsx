@@ -11,6 +11,7 @@ import Todos from "./pages/Todos";
 import Weekly from "./pages/Weekly";
 import Gratitude from "./pages/Gratitude";
 import MementoMori from "./pages/MementoMori";
+import Notes from "./pages/Notes";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -29,6 +30,7 @@ const App = () => (
           <Route path="/weekly" element={<Weekly />} />
           <Route path="/gratitude" element={<Gratitude />} />
           <Route path="/memento-mori" element={<MementoMori />} />
+          <Route path="/notes" element={<Notes />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
