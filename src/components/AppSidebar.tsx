@@ -10,13 +10,14 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
+import { Link } from "react-router-dom";
 
 const menuItems = [
   { title: "Dashboard", icon: Home, path: "/" },
   { title: "Osobní vize", icon: Brain, path: "/vision" },
   { title: "Buzer lístek", icon: CheckSquare, path: "/habits" },
   { title: "To-Do-All", icon: ListTodo, path: "/todos" },
-  { title: "Týdenní úkoly", icon: Calendar, path: "/weekly" },
+  { title: "Týdenní reflexe", icon: Calendar, path: "/weekly" },
   { title: "Flow lístek", icon: Heart, path: "/gratitude" },
 ];
 
@@ -31,10 +32,10 @@ export function AppSidebar() {
               {menuItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild>
-                    <a href={item.path} className="flex items-center gap-2">
+                    <Link to={item.path} className="flex items-center gap-2">
                       <item.icon className="h-5 w-5" />
                       <span>{item.title}</span>
-                    </a>
+                    </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}

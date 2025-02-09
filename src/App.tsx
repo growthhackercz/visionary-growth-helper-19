@@ -7,6 +7,9 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import Vision from "./pages/Vision";
 import Habits from "./pages/Habits";
+import Todos from "./pages/Todos";
+import Weekly from "./pages/Weekly";
+import Gratitude from "./pages/Gratitude";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -21,6 +24,9 @@ const App = () => (
           <Route path="/" element={<Index />} />
           <Route path="/vision" element={<Vision />} />
           <Route path="/habits" element={<Habits />} />
+          <Route path="/todos" element={<Todos />} />
+          <Route path="/weekly" element={<Weekly />} />
+          <Route path="/gratitude" element={<Gratitude />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>

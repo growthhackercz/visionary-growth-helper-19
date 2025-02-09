@@ -1,6 +1,9 @@
 
 import { Layout } from "@/components/Layout";
 import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Brain, CheckSquare, ListTodo, Calendar, Heart } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const Index = () => {
   return (
@@ -12,32 +15,72 @@ const Index = () => {
         </section>
 
         <section className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          <Card className="p-6 space-y-4 backdrop-blur-lg bg-card border-white/10">
-            <h2 className="text-xl font-semibold text-white">Osobní vize</h2>
-            <p className="text-white/80">
-              "Být lepší verzí sebe sama každý den"
-            </p>
-          </Card>
+          <Link to="/vision">
+            <Card className="p-6 space-y-4 backdrop-blur-lg bg-card border-white/10 hover:bg-white/10 transition-colors">
+              <div className="flex items-center gap-3">
+                <Brain className="w-6 h-6 text-primary" />
+                <h2 className="text-xl font-semibold text-white">Osobní vize</h2>
+              </div>
+              <p className="text-white/80">
+                Definujte a vizualizujte svou cestu k lepšímu já
+              </p>
+              <Button variant="secondary" className="w-full">
+                Otevřít osobní vizi
+              </Button>
+            </Card>
+          </Link>
 
-          <Card className="p-6 space-y-4 backdrop-blur-lg bg-card border-white/10">
-            <h2 className="text-xl font-semibold text-white">Dnešní návyky</h2>
-            <p className="text-white/80">3 ze 5 splněno</p>
-          </Card>
+          <Link to="/habits">
+            <Card className="p-6 space-y-4 backdrop-blur-lg bg-card border-white/10 hover:bg-white/10 transition-colors">
+              <div className="flex items-center gap-3">
+                <CheckSquare className="w-6 h-6 text-primary" />
+                <h2 className="text-xl font-semibold text-white">Buzer lístek</h2>
+              </div>
+              <p className="text-white/80">3 ze 5 splněno</p>
+              <Button variant="secondary" className="w-full">
+                Otevřít buzer lístek
+              </Button>
+            </Card>
+          </Link>
 
-          <Card className="p-6 space-y-4 backdrop-blur-lg bg-card border-white/10">
-            <h2 className="text-xl font-semibold text-white">Úkoly</h2>
-            <p className="text-white/80">2 prioritní úkoly dnes</p>
-          </Card>
+          <Link to="/todos">
+            <Card className="p-6 space-y-4 backdrop-blur-lg bg-card border-white/10 hover:bg-white/10 transition-colors">
+              <div className="flex items-center gap-3">
+                <ListTodo className="w-6 h-6 text-primary" />
+                <h2 className="text-xl font-semibold text-white">To-Do-All</h2>
+              </div>
+              <p className="text-white/80">2 prioritní úkoly dnes</p>
+              <Button variant="secondary" className="w-full">
+                Otevřít úkoly
+              </Button>
+            </Card>
+          </Link>
 
-          <Card className="p-6 space-y-4 backdrop-blur-lg bg-card border-white/10">
-            <h2 className="text-xl font-semibold text-white">Týdenní reflexe</h2>
-            <p className="text-white/80">Příští schůzka: Neděle</p>
-          </Card>
+          <Link to="/weekly">
+            <Card className="p-6 space-y-4 backdrop-blur-lg bg-card border-white/10 hover:bg-white/10 transition-colors">
+              <div className="flex items-center gap-3">
+                <Calendar className="w-6 h-6 text-primary" />
+                <h2 className="text-xl font-semibold text-white">Týdenní reflexe</h2>
+              </div>
+              <p className="text-white/80">Příští schůzka: Neděle</p>
+              <Button variant="secondary" className="w-full">
+                Otevřít reflexi
+              </Button>
+            </Card>
+          </Link>
 
-          <Card className="p-6 space-y-4 backdrop-blur-lg bg-card border-white/10">
-            <h2 className="text-xl font-semibold text-white">Flow lístek</h2>
-            <p className="text-white/80">Zapište si dnešní vděčnost</p>
-          </Card>
+          <Link to="/gratitude">
+            <Card className="p-6 space-y-4 backdrop-blur-lg bg-card border-white/10 hover:bg-white/10 transition-colors">
+              <div className="flex items-center gap-3">
+                <Heart className="w-6 h-6 text-primary" />
+                <h2 className="text-xl font-semibold text-white">Flow lístek</h2>
+              </div>
+              <p className="text-white/80">Zapište si dnešní vděčnost</p>
+              <Button variant="secondary" className="w-full">
+                Otevřít flow lístek
+              </Button>
+            </Card>
+          </Link>
         </section>
       </div>
     </Layout>
