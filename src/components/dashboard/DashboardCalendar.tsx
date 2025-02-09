@@ -10,7 +10,7 @@ export const DashboardCalendar = () => {
       <h3 className="text-lg font-semibold mb-4">Kalendář</h3>
       <div className="w-full overflow-hidden rounded-lg">
         <iframe 
-          src="https://calendar.google.com/calendar/embed?src=jiri.growthhacker%40gmail.com&ctz=Europe%2FPrague" 
+          src="https://calendar.google.com/calendar/embed?src=jiri.growthhacker%40gmail.com&ctz=Europe%2FPrague&mode=WEEK&showPrint=0&showTabs=1&showCalendars=1" 
           className={`w-full ${isMobile ? 'h-[400px]' : 'h-[600px]'} border-0`}
           frameBorder="0" 
           scrolling="no"
