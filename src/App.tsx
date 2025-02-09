@@ -10,6 +10,7 @@ import Habits from "./pages/Habits";
 import Todos from "./pages/Todos";
 import Weekly from "./pages/Weekly";
 import Gratitude from "./pages/Gratitude";
+import MementoMori from "./pages/MementoMori";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -27,6 +28,7 @@ const App = () => (
           <Route path="/todos" element={<Todos />} />
           <Route path="/weekly" element={<Weekly />} />
           <Route path="/gratitude" element={<Gratitude />} />
+          <Route path="/memento-mori" element={<MementoMori />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>

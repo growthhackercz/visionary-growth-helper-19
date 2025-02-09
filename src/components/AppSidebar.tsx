@@ -1,5 +1,5 @@
 
-import { Home, Brain, CheckSquare, ListTodo, Calendar, Heart } from "lucide-react";
+import { Home, Brain, CheckSquare, ListTodo, Calendar, Heart, Clock } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -19,6 +19,7 @@ const menuItems = [
   { title: "To-Do-All", icon: ListTodo, path: "/todos" },
   { title: "Týdenní reflexe", icon: Calendar, path: "/weekly" },
   { title: "Flow lístek", icon: Heart, path: "/gratitude" },
+  { title: "Memento Mori", icon: Clock, path: "/memento-mori" },
 ];
 
 export function AppSidebar() {
