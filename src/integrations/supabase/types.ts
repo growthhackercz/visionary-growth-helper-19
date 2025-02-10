@@ -374,6 +374,44 @@ export type Database = {
         }
         Relationships: []
       }
+      notifications: {
+        Row: {
+          body: string
+          created_at: string
+          id: string
+          scheduled_for: string
+          sent_at: string | null
+          title: string
+          user_id: string
+        }
+        Insert: {
+          body: string
+          created_at?: string
+          id?: string
+          scheduled_for: string
+          sent_at?: string | null
+          title: string
+          user_id: string
+        }
+        Update: {
+          body?: string
+          created_at?: string
+          id?: string
+          scheduled_for?: string
+          sent_at?: string | null
+          title?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "notifications_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       personal_study_notes: {
         Row: {
           created_at: string
@@ -454,6 +492,7 @@ export type Database = {
           created_at: string
           email: string | null
           id: string
+          notifications_enabled: boolean | null
           points: number
           updated_at: string
         }
@@ -461,6 +500,7 @@ export type Database = {
           created_at?: string
           email?: string | null
           id: string
+          notifications_enabled?: boolean | null
           points?: number
           updated_at?: string
         }
@@ -468,6 +508,7 @@ export type Database = {
           created_at?: string
           email?: string | null
           id?: string
+          notifications_enabled?: boolean | null
           points?: number
           updated_at?: string
         }
