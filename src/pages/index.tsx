@@ -3,8 +3,6 @@ import { Layout } from "@/components/Layout";
 import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { DailyVerse } from "@/components/DailyVerse";
-import { BibleReading } from "@/components/BibleReading";
 import { DashboardHeader } from "@/components/dashboard/DashboardHeader";
 import { DashboardStats } from "@/components/dashboard/DashboardStats";
 import { QuickActions } from "@/components/dashboard/QuickActions";
@@ -16,6 +14,7 @@ import { SleepTracker } from "@/components/dashboard/SleepTracker";
 import { AchievementsSection } from "@/components/dashboard/AchievementsSection";
 import { RewardsSection } from "@/components/dashboard/RewardsSection";
 import { GoalsSection } from "@/components/dashboard/GoalsSection";
+import { PlanningList } from "@/components/dashboard/PlanningList";
 import { Brain, CheckSquare, ListTodo, Calendar, Heart } from "lucide-react";
 
 const Index = () => {
@@ -32,7 +31,6 @@ const Index = () => {
   const [userName, setUserName] = useState("uživateli");
   const [showQuickAdd, setShowQuickAdd] = useState(false);
 
-  // Načtení cílů z localStorage nebo použití výchozích hodnot
   const [goals, setGoals] = useState(() => {
     const savedGoals = localStorage.getItem("userGoals");
     return savedGoals ? JSON.parse(savedGoals) : {
@@ -42,11 +40,6 @@ const Index = () => {
       monthlyProgress: 45
     };
   });
-
-  // Automatické ukládání cílů do localStorage při změně
-  useEffect(() => {
-    localStorage.setItem("userGoals", JSON.stringify(goals));
-  }, [goals]);
 
   const motivationalPhrases = [
     "Každý malý krok vpřed je vítězství. Jsi na dobré cestě!",
@@ -59,16 +52,6 @@ const Index = () => {
     "Dnes je perfektní den na to být v přítomnosti.",
     "Malé kroky vedou k velkým změnám. Jsi úžasný/á!",
     "Tvá cesta k lepšímu já začíná právě teď.",
-  ];
-
-  const weeklyData = [
-    { den: 'Po', splněno: 8, body: 120 },
-    { den: 'Út', splněno: 6, body: 90 },
-    { den: 'St', splněno: 7, body: 105 },
-    { den: 'Čt', splněno: 9, body: 135 },
-    { den: 'Pá', splněno: 5, body: 75 },
-    { den: 'So', splněno: 4, body: 60 },
-    { den: 'Ne', splněno: 7, body: 105 },
   ];
 
   useEffect(() => {
@@ -119,9 +102,6 @@ const Index = () => {
   return (
     <Layout>
       <div className="space-y-8 animate-fade-in">
-        <DailyVerse />
-        <BibleReading />
-        
         <DashboardHeader 
           userName={userName}
           setUserName={setUserName}
@@ -136,6 +116,8 @@ const Index = () => {
           monthlyProgress={goals.monthlyProgress}
         />
 
+        <PlanningList />
+
         <QuickActions 
           categories={categories}
           showQuickAdd={showQuickAdd}
@@ -149,7 +131,15 @@ const Index = () => {
           <SleepTracker />
         </div>
 
-        <DashboardStats weeklyData={weeklyData} />
+        <DashboardStats weeklyData={[
+          { den: 'Po', splněno: 8, body: 120 },
+          { den: 'Út', splněno: 6, body: 90 },
+          { den: 'St', splněno: 7, body: 105 },
+          { den: 'Čt', splněno: 9, body: 135 },
+          { den: 'Pá', splněno: 5, body: 75 },
+          { den: 'So', splněno: 4, body: 60 },
+          { den: 'Ne', splněno: 7, body: 105 },
+        ]} />
 
         <DashboardCalendar />
 
