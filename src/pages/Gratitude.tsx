@@ -56,9 +56,9 @@ const Gratitude = () => {
       .select('*')
       .eq('user_id', user.id)
       .eq('entry_date', new Date().toISOString().split('T')[0])
-      .single();
+      .maybeSingle();
 
-    if (error && error.code !== 'PGRST116') throw error;
+    if (error) throw error;
     return data;
   };
 
@@ -131,6 +131,14 @@ const Gratitude = () => {
         description: "Vaše vděčnost byla úspěšně uložena.",
       });
       setShowSaveDialog(false);
+    },
+    onError: (error) => {
+      toast({
+        title: "Chyba!",
+        description: "Nepodařilo se uložit vaši vděčnost. Zkuste to prosím znovu.",
+        variant: "destructive",
+      });
+      console.error("Error saving gratitude:", error);
     }
   });
 
