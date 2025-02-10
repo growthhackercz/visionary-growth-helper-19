@@ -80,7 +80,7 @@ const App = () => (
               path="/memento-mori"
               element={
                 <PrivateRoute>
-                  <Memento />
+                  <MementoMori />
                 </PrivateRoute>
               }
             />
