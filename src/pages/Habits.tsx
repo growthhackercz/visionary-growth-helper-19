@@ -13,6 +13,7 @@ import { HabitCard } from "@/components/habits/HabitCard";
 import { HabitStats } from "@/components/habits/HabitStats";
 import { Button } from "@/components/ui/button";
 import { PlusCircle, Calendar, TrendingUp } from "lucide-react";
+import { HabitTable } from "@/components/habits/HabitTable";
 
 const Habits = () => {
   const { toast } = useToast();
