@@ -2,12 +2,21 @@
 import { Layout } from "@/components/Layout";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
 import { Heart } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 interface GratitudeEntry {
   id: string;
@@ -22,6 +31,7 @@ const Gratitude = () => {
   const queryClient = useQueryClient();
   const [entries, setEntries] = useState<[string, string, string]>(["", "", ""]);
   const [streak, setStreak] = useState(0);
+  const [showSaveDialog, setShowSaveDialog] = useState(false);
 
   // Fetch streak
   const fetchStreak = async () => {
@@ -120,6 +130,7 @@ const Gratitude = () => {
         title: "Uloženo!",
         description: "Vaše vděčnost byla úspěšně uložena.",
       });
+      setShowSaveDialog(false);
     }
   });
 
@@ -128,9 +139,9 @@ const Gratitude = () => {
     newEntries[index] = value;
     setEntries(newEntries as [string, string, string]);
 
-    // If all entries are filled, save automatically
+    // If all entries are filled, show confirmation dialog
     if (newEntries.every(entry => entry.trim() !== "")) {
-      saveGratitudeMutation.mutate();
+      setShowSaveDialog(true);
     }
   };
 
@@ -186,6 +197,23 @@ const Gratitude = () => {
             </div>
           </Card>
         )}
+
+        <AlertDialog open={showSaveDialog} onOpenChange={setShowSaveDialog}>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Uložit dnešní vděčnost?</AlertDialogTitle>
+              <AlertDialogDescription>
+                Chcete uložit všechny tři záznamy vaší dnešní vděčnosti?
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Zrušit</AlertDialogCancel>
+              <AlertDialogAction onClick={() => saveGratitudeMutation.mutate()}>
+                Uložit
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </div>
     </Layout>
   );
