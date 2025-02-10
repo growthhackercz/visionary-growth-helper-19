@@ -1,51 +1,15 @@
+
 import { Layout } from "@/components/Layout";
 import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Plus, Heart, User, Briefcase, Book, Compass } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { format, subDays } from "date-fns";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useState } from "react";
-import { Form, FormField, FormItem, FormControl } from "@/components/ui/form";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
 import { HabitTree } from "@/components/habits/HabitTree";
-
-const categoryIcons: Record<string, React.ReactNode> = {
-  Health: <Heart className="w-4 h-4" />,
-  Personal: <User className="w-4 h-4" />,
-  Work: <Briefcase className="w-4 h-4" />,
-  Learning: <Book className="w-4 h-4" />,
-  Spiritual: <Compass className="w-4 h-4" />,
-};
-
-const frequencies = [
-  { value: "daily", label: "Každý den" },
-  { value: "weekly", label: "Každý týden" },
-  { value: "monthly", label: "Každý měsíc" },
-];
-
-const AddHabitSchema = z.object({
-  name: z.string().min(1, "Název je povinný"),
-  frequency: z.string(),
-  targetValue: z.number().min(1, "Minimální hodnota musí být větší než 0"),
-  targetUnit: z.string().min(1, "Jednotka je povinná"),
-  categoryId: z.string().min(1, "Kategorie je povinná"),
-});
+import { AddHabitDialog } from "@/components/habits/AddHabitDialog";
+import { CategoryFilters } from "@/components/habits/CategoryFilters";
+import { HabitTable } from "@/components/habits/HabitTable";
 
 const Habits = () => {
   const { toast } = useToast();
@@ -54,17 +18,6 @@ const Habits = () => {
   const last14Days = Array.from({ length: 14 }, (_, i) => {
     const date = subDays(new Date(), i);
     return format(date, 'dd.MM.yyyy');
-  });
-
-  const form = useForm({
-    resolver: zodResolver(AddHabitSchema),
-    defaultValues: {
-      name: "",
-      frequency: "daily",
-      targetValue: 1,
-      targetUnit: "",
-      categoryId: "",
-    },
   });
 
   const { data: habits, refetch: refetchHabits } = useQuery({
@@ -116,50 +69,6 @@ const Habits = () => {
       return data || [];
     },
   });
-
-  const getStatusColor = (status: string | null) => {
-    switch (status) {
-      case "success":
-        return "bg-green-500/20 text-green-500";
-      case "partial":
-        return "bg-blue-500/20 text-blue-500";
-      case "failed":
-        return "bg-red-500/20 text-red-500";
-      default:
-        return "bg-secondary/50 text-white/60";
-    }
-  };
-
-  const handleAddHabit = async (values: z.infer<typeof AddHabitSchema>) => {
-    try {
-      const { error } = await supabase
-        .from('habits')
-        .insert([{
-          name: values.name,
-          frequency: values.frequency,
-          target_value: values.targetValue,
-          target_unit: values.targetUnit,
-          category_id: values.categoryId,
-        }]);
-
-      if (error) throw error;
-
-      toast({
-        title: "Návyk byl úspěšně přidán",
-        description: "Můžete začít sledovat svůj nový návyk",
-      });
-
-      setIsAddHabitOpen(false);
-      form.reset();
-      refetchHabits();
-    } catch (error) {
-      toast({
-        title: "Chyba při přidávání návyku",
-        description: "Zkuste to prosím znovu",
-        variant: "destructive",
-      });
-    }
-  };
 
   const handleHabitComplete = async (habitId: string, date: string) => {
     try {
@@ -219,33 +128,6 @@ const Habits = () => {
     }
   };
 
-  const getDailySummaryStatus = (date: string, habitsData: any[]) => {
-    if (!habitsData?.length) return null;
-    
-    const dayProgress = habitsData.map(habit => {
-      const progress = habit.habit_progress?.find((p: any) => 
-        format(new Date(p.date), 'dd.MM.yyyy') === date
-      );
-      return progress?.status;
-    });
-
-    const rating = dailyRatings?.find(r => format(new Date(r.date), 'dd.MM.yyyy') === date);
-    
-    if (rating) {
-      if (rating.rating >= 7) return 'success';
-      if (rating.rating >= 4) return 'partial';
-      return 'failed';
-    }
-
-    if (dayProgress.some(status => status === 'failed' || status === null)) {
-      return 'failed';
-    }
-    if (dayProgress.some(status => status === 'partial')) {
-      return 'partial';
-    }
-    return 'success';
-  };
-
   const today = format(new Date(), 'dd.MM.yyyy');
   const totalHabits = habits?.length || 0;
   const completedHabits = habits?.filter(habit => 
@@ -271,255 +153,24 @@ const Habits = () => {
         </section>
 
         <div className="flex justify-between items-center mb-4">
-          <div className="flex gap-2">
-            {Object.entries(categoryIcons).map(([category, icon]) => (
-              <div 
-                key={category}
-                className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 text-white/80"
-              >
-                {icon}
-                <span className="text-sm">{category}</span>
-              </div>
-            ))}
-          </div>
-          
-          <Dialog open={isAddHabitOpen} onOpenChange={setIsAddHabitOpen}>
-            <DialogTrigger asChild>
-              <Button className="bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600">
-                <Plus className="mr-2" size={20} />
-                Přidat návyk
-              </Button>
-            </DialogTrigger>
-            <DialogContent className="sm:max-w-[425px]">
-              <DialogHeader>
-                <DialogTitle>Přidat nový návyk</DialogTitle>
-              </DialogHeader>
-              <Form {...form}>
-                <form onSubmit={form.handleSubmit(handleAddHabit)} className="space-y-4">
-                  <FormField
-                    control={form.control}
-                    name="name"
-                    render={({ field }) => (
-                      <FormItem>
-                        <Label>Název návyku</Label>
-                        <FormControl>
-                          <Input placeholder="Např. Ranní cvičení" {...field} />
-                        </FormControl>
-                      </FormItem>
-                    )}
-                  />
-                  
-                  <FormField
-                    control={form.control}
-                    name="frequency"
-                    render={({ field }) => (
-                      <FormItem>
-                        <Label>Frekvence opakování</Label>
-                        <Select 
-                          onValueChange={field.onChange} 
-                          defaultValue={field.value}
-                        >
-                          <FormControl>
-                            <SelectTrigger>
-                              <SelectValue placeholder="Vyberte frekvenci" />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent>
-                            {frequencies.map((freq) => (
-                              <SelectItem key={freq.value} value={freq.value}>
-                                {freq.label}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      </FormItem>
-                    )}
-                  />
-
-                  <div className="grid grid-cols-2 gap-4">
-                    <FormField
-                      control={form.control}
-                      name="targetValue"
-                      render={({ field }) => (
-                        <FormItem>
-                          <Label>Minimální laťka</Label>
-                          <FormControl>
-                            <Input 
-                              type="number" 
-                              min="1"
-                              placeholder="Např. 30" 
-                              {...field}
-                              onChange={(e) => field.onChange(parseInt(e.target.value))}
-                            />
-                          </FormControl>
-                        </FormItem>
-                      )}
-                    />
-
-                    <FormField
-                      control={form.control}
-                      name="targetUnit"
-                      render={({ field }) => (
-                        <FormItem>
-                          <Label>Jednotka</Label>
-                          <FormControl>
-                            <Input placeholder="Např. minut" {...field} />
-                          </FormControl>
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-
-                  <FormField
-                    control={form.control}
-                    name="categoryId"
-                    render={({ field }) => (
-                      <FormItem>
-                        <Label>Kategorie</Label>
-                        <Select 
-                          onValueChange={field.onChange} 
-                          defaultValue={field.value}
-                        >
-                          <FormControl>
-                            <SelectTrigger>
-                              <SelectValue placeholder="Vyberte kategorii" />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent>
-                            {categories?.map((category) => (
-                              <SelectItem key={category.id} value={category.id}>
-                                {category.name}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      </FormItem>
-                    )}
-                  />
-
-                  <div className="flex justify-end space-x-2">
-                    <Button 
-                      type="button" 
-                      variant="outline"
-                      onClick={() => setIsAddHabitOpen(false)}
-                    >
-                      Zrušit
-                    </Button>
-                    <Button 
-                      type="submit"
-                      className="bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600"
-                    >
-                      Přidat návyk
-                    </Button>
-                  </div>
-                </form>
-              </Form>
-            </DialogContent>
-          </Dialog>
+          <CategoryFilters />
+          <AddHabitDialog
+            isOpen={isAddHabitOpen}
+            onOpenChange={setIsAddHabitOpen}
+            categories={categories || []}
+            onHabitAdded={refetchHabits}
+          />
         </div>
 
         <Card className="p-6 backdrop-blur-lg bg-card/30 border-white/10">
-          <Table>
-            <TableHeader>
-              <TableRow className="hover:bg-transparent border-b border-white/10">
-                <TableHead className="text-white font-['Caveat'] text-lg">Datum</TableHead>
-                {habits?.map((habit) => (
-                  <TableHead 
-                    key={habit.id} 
-                    className="text-white font-['Caveat'] text-lg text-center"
-                  >
-                    <div className="space-y-2">
-                      <div className="flex items-center justify-center gap-2">
-                        {categoryIcons[habit.habit_categories.name]}
-                        <span>{habit.name}</span>
-                      </div>
-                      <div className="text-primary/80 text-sm space-y-1">
-                        <div>Min: {habit.target_value} {habit.target_unit}</div>
-                        <div>Frekvence: {frequencies.find(f => f.value === habit.frequency)?.label}</div>
-                        <div className="text-green-500">Série: {habit.current_streak} dní</div>
-                        {habit.best_streak > 0 && (
-                          <div className="text-yellow-500">Nejlepší: {habit.best_streak} dní</div>
-                        )}
-                      </div>
-                    </div>
-                  </TableHead>
-                ))}
-                <TableHead className="text-white font-['Caveat'] text-lg text-center">
-                  Denní souhrn
-                </TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {last14Days.map((date) => (
-                <TableRow 
-                  key={date}
-                  className="hover:bg-white/5 transition-colors border-b border-white/10"
-                >
-                  <TableCell className="font-medium text-white font-['Caveat'] text-lg">
-                    {date}
-                  </TableCell>
-                  {habits?.map((habit) => {
-                    const progress = habit.habit_progress?.find((p: any) => 
-                      format(new Date(p.date), 'dd.MM.yyyy') === date
-                    );
-                    return (
-                      <TableCell 
-                        key={`${habit.id}-${date}`}
-                        className={`font-['Caveat'] text-lg text-center relative group ${getStatusColor(progress?.status)}`}
-                      >
-                        <div className="flex flex-col items-center gap-2">
-                          <div>
-                            {progress?.value || "—"}
-                            {progress?.notes && (
-                              <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 p-2 bg-black/90 rounded text-sm text-white whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity">
-                                {progress.notes}
-                              </div>
-                            )}
-                          </div>
-                          {!progress && (
-                            <Button
-                              size="sm"
-                              variant="ghost"
-                              className="text-white/60 hover:text-white hover:bg-white/10"
-                              onClick={() => handleHabitComplete(habit.id, date)}
-                            >
-                              Splnit
-                            </Button>
-                          )}
-                        </div>
-                      </TableCell>
-                    );
-                  })}
-                  <TableCell className="text-center">
-                    <div className="flex flex-col items-center gap-2">
-                      <div className={`font-['Caveat'] text-lg ${getStatusColor(getDailySummaryStatus(date, habits))}`}>
-                        {dailyRatings?.find(r => format(new Date(r.date), 'dd.MM.yyyy') === date)?.rating || "•"}
-                      </div>
-                      <Select
-                        value={selectedRating?.toString()}
-                        onValueChange={(value) => {
-                          const rating = parseInt(value);
-                          setSelectedRating(rating);
-                          handleDailyRating(date, rating);
-                        }}
-                      >
-                        <SelectTrigger className="w-20">
-                          <SelectValue placeholder="0-10" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {Array.from({ length: 11 }, (_, i) => (
-                            <SelectItem key={i} value={i.toString()}>
-                              {i}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+          <HabitTable
+            habits={habits || []}
+            last14Days={last14Days}
+            dailyRatings={dailyRatings || []}
+            selectedRating={selectedRating}
+            onHabitComplete={handleHabitComplete}
+            onDailyRating={handleDailyRating}
+          />
         </Card>
       </div>
     </Layout>
