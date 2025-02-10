@@ -13,6 +13,8 @@ import { DashboardCategories } from "@/components/dashboard/DashboardCategories"
 import { DashboardCalendar } from "@/components/dashboard/DashboardCalendar";
 import { MoodTracker } from "@/components/dashboard/MoodTracker";
 import { SleepTracker } from "@/components/dashboard/SleepTracker";
+import { AchievementsSection } from "@/components/dashboard/AchievementsSection";
+import { RewardsSection } from "@/components/dashboard/RewardsSection";
 import { Brain, CheckSquare, ListTodo, Calendar, Heart } from "lucide-react";
 
 const Index = () => {
@@ -131,6 +133,11 @@ const Index = () => {
           progressValues={progressValues}
           isMobile={isMobile}
         />
+
+        <div className="space-y-6">
+          <AchievementsSection />
+          <RewardsSection />
+        </div>
       </div>
     </Layout>
   );
