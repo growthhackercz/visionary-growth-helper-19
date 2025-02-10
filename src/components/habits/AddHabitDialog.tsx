@@ -1,5 +1,5 @@
 
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -18,12 +18,31 @@ const frequencies = [
   { value: "monthly", label: "Každý měsíc" },
 ];
 
+const priorities = [
+  { value: 0, label: "Nízká" },
+  { value: 1, label: "Střední" },
+  { value: 2, label: "Vysoká" },
+];
+
+const weekDays = [
+  { value: "monday", label: "Pondělí" },
+  { value: "tuesday", label: "Úterý" },
+  { value: "wednesday", label: "Středa" },
+  { value: "thursday", label: "Čtvrtek" },
+  { value: "friday", label: "Pátek" },
+  { value: "saturday", label: "Sobota" },
+  { value: "sunday", label: "Neděle" },
+];
+
 const AddHabitSchema = z.object({
   name: z.string().min(1, "Název je povinný"),
   frequency: z.string(),
   targetValue: z.number().min(1, "Minimální hodnota musí být větší než 0"),
   targetUnit: z.string().min(1, "Jednotka je povinná"),
   categoryId: z.string().min(1, "Kategorie je povinná"),
+  priority: z.number(),
+  reminderTime: z.string().optional(),
+  reminderDays: z.array(z.string()).optional(),
 });
 
 interface AddHabitDialogProps {
@@ -43,6 +62,9 @@ export const AddHabitDialog = ({ isOpen, onOpenChange, categories, onHabitAdded 
       targetValue: 1,
       targetUnit: "",
       categoryId: "",
+      priority: 0,
+      reminderTime: "",
+      reminderDays: [],
     },
   });
 
@@ -56,6 +78,9 @@ export const AddHabitDialog = ({ isOpen, onOpenChange, categories, onHabitAdded 
           target_value: values.targetValue,
           target_unit: values.targetUnit,
           category_id: values.categoryId,
+          priority: values.priority,
+          reminder_time: values.reminderTime || null,
+          reminder_days: values.reminderDays || null,
         }]);
 
       if (error) throw error;
@@ -79,12 +104,6 @@ export const AddHabitDialog = ({ isOpen, onOpenChange, categories, onHabitAdded 
 
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      <DialogTrigger asChild>
-        <Button className="bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600">
-          <Plus className="mr-2" size={20} />
-          Přidat návyk
-        </Button>
-      </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Přidat nový návyk</DialogTitle>
@@ -184,6 +203,82 @@ export const AddHabitDialog = ({ isOpen, onOpenChange, categories, onHabitAdded 
                       {categories?.map((category) => (
                         <SelectItem key={category.id} value={category.id}>
                           {category.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="priority"
+              render={({ field }) => (
+                <FormItem>
+                  <Label>Priorita</Label>
+                  <Select 
+                    onValueChange={(value) => field.onChange(parseInt(value))} 
+                    defaultValue={field.value.toString()}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Vyberte prioritu" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {priorities.map((priority) => (
+                        <SelectItem key={priority.value} value={priority.value.toString()}>
+                          {priority.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="reminderTime"
+              render={({ field }) => (
+                <FormItem>
+                  <Label>Čas připomínky</Label>
+                  <FormControl>
+                    <Input 
+                      type="time" 
+                      {...field} 
+                    />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="reminderDays"
+              render={({ field }) => (
+                <FormItem>
+                  <Label>Dny připomínek</Label>
+                  <Select 
+                    onValueChange={(value) => {
+                      const currentValues = field.value || [];
+                      const newValues = currentValues.includes(value)
+                        ? currentValues.filter(day => day !== value)
+                        : [...currentValues, value];
+                      field.onChange(newValues);
+                    }}
+                    value={field.value?.[0] || undefined}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Vyberte dny" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {weekDays.map((day) => (
+                        <SelectItem key={day.value} value={day.value}>
+                          {day.label}
                         </SelectItem>
                       ))}
                     </SelectContent>

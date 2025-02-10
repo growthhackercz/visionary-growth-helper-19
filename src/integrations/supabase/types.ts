@@ -320,6 +320,7 @@ export type Database = {
           habit_id: string
           id: string
           notes: string | null
+          reflection: string | null
           status: string | null
           value: number | null
         }
@@ -329,6 +330,7 @@ export type Database = {
           habit_id: string
           id?: string
           notes?: string | null
+          reflection?: string | null
           status?: string | null
           value?: number | null
         }
@@ -338,12 +340,51 @@ export type Database = {
           habit_id?: string
           id?: string
           notes?: string | null
+          reflection?: string | null
           status?: string | null
           value?: number | null
         }
         Relationships: [
           {
             foreignKeyName: "habit_progress_habit_id_fkey"
+            columns: ["habit_id"]
+            isOneToOne: false
+            referencedRelation: "habits"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      habit_reminders: {
+        Row: {
+          body: string
+          created_at: string
+          habit_id: string | null
+          id: string
+          scheduled_for: string
+          sent_at: string | null
+          title: string
+        }
+        Insert: {
+          body: string
+          created_at?: string
+          habit_id?: string | null
+          id?: string
+          scheduled_for: string
+          sent_at?: string | null
+          title: string
+        }
+        Update: {
+          body?: string
+          created_at?: string
+          habit_id?: string | null
+          id?: string
+          scheduled_for?: string
+          sent_at?: string | null
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "habit_reminders_habit_id_fkey"
             columns: ["habit_id"]
             isOneToOne: false
             referencedRelation: "habits"
@@ -361,6 +402,9 @@ export type Database = {
           id: string
           name: string
           notes: string | null
+          priority: number | null
+          reminder_days: string[] | null
+          reminder_time: string | null
           target_unit: string
           target_value: number
         }
@@ -373,6 +417,9 @@ export type Database = {
           id?: string
           name: string
           notes?: string | null
+          priority?: number | null
+          reminder_days?: string[] | null
+          reminder_time?: string | null
           target_unit: string
           target_value: number
         }
@@ -385,6 +432,9 @@ export type Database = {
           id?: string
           name?: string
           notes?: string | null
+          priority?: number | null
+          reminder_days?: string[] | null
+          reminder_time?: string | null
           target_unit?: string
           target_value?: number
         }
