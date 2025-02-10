@@ -9,9 +9,3 @@ export const categoryIcons: Record<string, ReactNode> = {
   "Learning": <Book className="w-4 h-4" />,
   "Spiritual": <Compass className="w-4 h-4" />
 };
-
-export const frequencies = [
-  { value: "daily", label: "Každý den" },
-  { value: "weekly", label: "Každý týden" },
-  { value: "monthly", label: "Každý měsíc" },
-];

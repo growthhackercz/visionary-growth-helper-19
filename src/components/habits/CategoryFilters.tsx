@@ -1,5 +1,5 @@
 
-import { categoryIcons } from "@/lib/habits";
+import { categoryIcons } from "@/components/habits/CategoryIcons";
 
 export const CategoryFilters = () => {
   return (

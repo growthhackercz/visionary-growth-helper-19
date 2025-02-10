@@ -1,4 +1,3 @@
-
 import { format } from "date-fns";
 import { Button } from "@/components/ui/button";
 import {
@@ -9,8 +8,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { frequencies } from "@/lib/habits";
-import { categoryIcons } from "@/lib/habits";
+import { frequencies } from "@/lib/constants";
+import { categoryIcons } from "@/components/habits/CategoryIcons";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 interface HabitTableProps {
