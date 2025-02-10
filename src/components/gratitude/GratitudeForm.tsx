@@ -1,20 +1,11 @@
 
 import { useState } from "react";
 import { Card } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
+import { GratitudeFormInputs } from "./GratitudeFormInputs";
+import { GratitudeSaveDialog } from "./GratitudeSaveDialog";
 
 interface GratitudeFormProps {
   initialEntries?: [string, string, string];
@@ -77,37 +68,15 @@ export const GratitudeForm = ({ initialEntries = ["", "", ""] }: GratitudeFormPr
       <Card className="p-6 space-y-6 backdrop-blur-lg bg-card border-white/10">
         <div className="space-y-4">
           <h2 className="text-xl font-semibold text-white">Dnešní vděčnost</h2>
-          <div className="grid gap-4 md:grid-cols-3">
-            {[0, 1, 2].map((index) => (
-              <div key={index} className="space-y-2">
-                <Input
-                  value={entries[index]}
-                  onChange={(e) => handleInputChange(index, e.target.value)}
-                  placeholder={`${index + 1}. věc, za kterou jsem dnes vděčný/á...`}
-                  className="bg-secondary/50 border-white/10 text-white placeholder:text-white/50"
-                />
-              </div>
-            ))}
-          </div>
+          <GratitudeFormInputs entries={entries} onInputChange={handleInputChange} />
         </div>
       </Card>
 
-      <AlertDialog open={showSaveDialog} onOpenChange={setShowSaveDialog}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Uložit dnešní vděčnost?</AlertDialogTitle>
-            <AlertDialogDescription>
-              Chcete uložit všechny tři záznamy vaší dnešní vděčnosti?
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Zrušit</AlertDialogCancel>
-            <AlertDialogAction onClick={() => saveGratitudeMutation.mutate()}>
-              Uložit
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+      <GratitudeSaveDialog
+        open={showSaveDialog}
+        onOpenChange={setShowSaveDialog}
+        onSave={() => saveGratitudeMutation.mutate()}
+      />
     </>
   );
 };
