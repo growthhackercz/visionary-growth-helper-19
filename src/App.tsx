@@ -5,6 +5,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/components/AuthProvider";
+import { PrivateRoute } from "@/components/PrivateRoute";
 import Index from "./pages/index";
 import Vision from "./pages/Vision";
 import Habits from "./pages/Habits";
@@ -27,14 +28,70 @@ const App = () => (
           <Sonner />
           <Routes>
             <Route path="/auth" element={<Auth />} />
-            <Route path="/" element={<Index />} />
-            <Route path="/vision" element={<Vision />} />
-            <Route path="/habits" element={<Habits />} />
-            <Route path="/todos" element={<Todos />} />
-            <Route path="/weekly" element={<Weekly />} />
-            <Route path="/gratitude" element={<Gratitude />} />
-            <Route path="/memento-mori" element={<MementoMori />} />
-            <Route path="/notes" element={<Notes />} />
+            <Route
+              path="/"
+              element={
+                <PrivateRoute>
+                  <Index />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/vision"
+              element={
+                <PrivateRoute>
+                  <Vision />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/habits"
+              element={
+                <PrivateRoute>
+                  <Habits />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/todos"
+              element={
+                <PrivateRoute>
+                  <Todos />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/weekly"
+              element={
+                <PrivateRoute>
+                  <Weekly />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/gratitude"
+              element={
+                <PrivateRoute>
+                  <Gratitude />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/memento-mori"
+              element={
+                <PrivateRoute>
+                  <Memento />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/notes"
+              element={
+                <PrivateRoute>
+                  <Notes />
+                </PrivateRoute>
+              }
+            />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </TooltipProvider>
