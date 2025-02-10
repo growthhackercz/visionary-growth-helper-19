@@ -15,6 +15,7 @@ import { MoodTracker } from "@/components/dashboard/MoodTracker";
 import { SleepTracker } from "@/components/dashboard/SleepTracker";
 import { AchievementsSection } from "@/components/dashboard/AchievementsSection";
 import { RewardsSection } from "@/components/dashboard/RewardsSection";
+import { GoalsSection } from "@/components/dashboard/GoalsSection";
 import { Brain, CheckSquare, ListTodo, Calendar, Heart } from "lucide-react";
 
 const Index = () => {
@@ -30,6 +31,22 @@ const Index = () => {
 
   const [userName, setUserName] = useState("uživateli");
   const [showQuickAdd, setShowQuickAdd] = useState(false);
+
+  // Načtení cílů z localStorage nebo použití výchozích hodnot
+  const [goals, setGoals] = useState(() => {
+    const savedGoals = localStorage.getItem("userGoals");
+    return savedGoals ? JSON.parse(savedGoals) : {
+      weekly: "Dokončit hlavní projekt tento týden",
+      monthly: "Zlepšit své dovednosti v oblasti projektového řízení",
+      yearly: "Získat certifikaci a povýšení v práci",
+      monthlyProgress: 45
+    };
+  });
+
+  // Automatické ukládání cílů do localStorage při změně
+  useEffect(() => {
+    localStorage.setItem("userGoals", JSON.stringify(goals));
+  }, [goals]);
 
   const motivationalPhrases = [
     "Každý malý krok vpřed je vítězství. Jsi na dobré cestě!",
@@ -110,6 +127,13 @@ const Index = () => {
           setUserName={setUserName}
           dailyQuote={dailyQuote}
           showDailyMotivation={showDailyMotivation}
+        />
+
+        <GoalsSection 
+          weeklyGoal={goals.weekly}
+          monthlyGoal={goals.monthly}
+          yearlyGoal={goals.yearly}
+          monthlyProgress={goals.monthlyProgress}
         />
 
         <QuickActions 
