@@ -57,14 +57,28 @@ export default function NoteDetail() {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Not authenticated");
 
+      if (!note.title) {
+        throw new Error("Title is required");
+      }
+
       const noteData = {
         ...note,
+        title: note.title,
         user_id: user.id,
       };
 
       const { data, error } = isNewNote
-        ? await supabase.from('notes').insert([noteData]).select().single()
-        : await supabase.from('notes').update(noteData).eq('id', id).select().single();
+        ? await supabase
+            .from('notes')
+            .insert(noteData)
+            .select()
+            .single()
+        : await supabase
+            .from('notes')
+            .update(noteData)
+            .eq('id', id)
+            .select()
+            .single();
 
       if (error) throw error;
       return data;
@@ -76,7 +90,7 @@ export default function NoteDetail() {
     },
     onError: (error) => {
       console.error("Error saving note:", error);
-      toast.error("Nepodařilo se uložit poznámku");
+      toast.error(error instanceof Error ? error.message : "Nepodařilo se uložit poznámku");
     }
   });
 
@@ -147,7 +161,10 @@ export default function NoteDetail() {
                 </Button>
               )}
             </div>
-            <Button onClick={() => saveMutation.mutate()}>
+            <Button 
+              onClick={() => saveMutation.mutate()}
+              disabled={!note.title}
+            >
               {isNewNote ? "Vytvořit" : "Uložit"}
             </Button>
           </div>
