@@ -142,6 +142,30 @@ export type Database = {
         }
         Relationships: []
       }
+      daily_thoughts: {
+        Row: {
+          content: string
+          created_at: string
+          date: string
+          id: string
+          source_url: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          date?: string
+          id?: string
+          source_url: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          date?: string
+          id?: string
+          source_url?: string
+        }
+        Relationships: []
+      }
       daily_verses: {
         Row: {
           created_at: string
