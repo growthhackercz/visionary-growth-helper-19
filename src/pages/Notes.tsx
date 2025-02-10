@@ -7,6 +7,9 @@ import { PlusCircle, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { format } from "date-fns";
 import { cs } from "date-fns/locale";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
+import { useNavigate } from "react-router-dom";
 
 interface Note {
   id: string;
@@ -17,25 +20,27 @@ interface Note {
 
 export default function Notes() {
   const [searchQuery, setSearchQuery] = useState("");
-  const [notes, setNotes] = useState<Note[]>([
-    {
-      id: "1",
-      title: "Vytvořit rozhraní které si bude tahat data z feedu a...",
-      date: new Date("2024-02-06"),
-    },
-    {
-      id: "2",
-      title: "Kolik je v Bibli proroctví?",
-      subtitle: "Kolik zázraků Ježíš udělal?",
-      date: new Date("2024-02-04"),
-    },
-    {
-      id: "3",
-      title: "Co si připravit za přednášku?",
-      subtitle: "Přednáška č. 76",
-      date: new Date("2024-01-25"),
-    },
-  ]);
+  const navigate = useNavigate();
+
+  const { data: notes = [], isLoading } = useQuery({
+    queryKey: ['notes'],
+    queryFn: async () => {
+      const { data: notes, error } = await supabase
+        .from('notes')
+        .select('*')
+        .order('date', { ascending: false });
+
+      if (error) {
+        console.error("Error fetching notes:", error);
+        return [];
+      }
+
+      return notes.map(note => ({
+        ...note,
+        date: new Date(note.date)
+      }));
+    }
+  });
 
   const filteredNotes = notes.filter(note =>
     note.title.toLowerCase().includes(searchQuery.toLowerCase())
@@ -44,6 +49,16 @@ export default function Notes() {
   const formatDate = (date: Date) => {
     return format(date, "d. MMMM", { locale: cs });
   };
+
+  if (isLoading) {
+    return (
+      <Layout>
+        <div className="flex justify-center items-center h-[50vh]">
+          <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-primary"></div>
+        </div>
+      </Layout>
+    );
+  }
 
   return (
     <Layout>
@@ -70,6 +85,7 @@ export default function Notes() {
             <Card
               key={note.id}
               className="p-4 hover:bg-muted/50 transition-colors cursor-pointer"
+              onClick={() => navigate(`/notes/${note.id}`)}
             >
               <h2 className="font-medium">{note.title}</h2>
               {note.subtitle && (
@@ -87,6 +103,7 @@ export default function Notes() {
         <Button
           size="icon"
           className="fixed bottom-6 right-6 w-14 h-14 rounded-full shadow-lg"
+          onClick={() => navigate('/notes/new')}
         >
           <PlusCircle className="w-6 h-6" />
         </Button>

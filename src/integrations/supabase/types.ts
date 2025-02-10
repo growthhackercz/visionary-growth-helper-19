@@ -404,6 +404,36 @@ export type Database = {
         }
         Relationships: []
       }
+      notes: {
+        Row: {
+          content: string | null
+          created_at: string
+          date: string
+          id: string
+          subtitle: string | null
+          title: string
+          user_id: string
+        }
+        Insert: {
+          content?: string | null
+          created_at?: string
+          date?: string
+          id?: string
+          subtitle?: string | null
+          title: string
+          user_id: string
+        }
+        Update: {
+          content?: string | null
+          created_at?: string
+          date?: string
+          id?: string
+          subtitle?: string | null
+          title?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       notifications: {
         Row: {
           body: string

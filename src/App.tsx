@@ -14,6 +14,7 @@ import Weekly from "./pages/Weekly";
 import Gratitude from "./pages/Gratitude";
 import MementoMori from "./pages/MementoMori";
 import Notes from "./pages/Notes";
+import NoteDetail from "./pages/NoteDetail";
 import NotFound from "./pages/NotFound";
 import Auth from "./pages/Auth";
 
@@ -89,6 +90,14 @@ const App = () => (
               element={
                 <PrivateRoute>
                   <Notes />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/notes/:id"
+              element={
+                <PrivateRoute>
+                  <NoteDetail />
                 </PrivateRoute>
               }
             />
