@@ -1,19 +1,137 @@
 
 import { Layout } from "@/components/Layout";
 import { Card } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Plus, Heart } from "lucide-react";
+import { Heart } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useState, useEffect } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+
+interface GratitudeEntry {
+  id: string;
+  entry_date: string;
+  entry_1: string | null;
+  entry_2: string | null;
+  entry_3: string | null;
+}
 
 const Gratitude = () => {
   const { toast } = useToast();
+  const queryClient = useQueryClient();
+  const [entries, setEntries] = useState<[string, string, string]>(["", "", ""]);
+  const [streak, setStreak] = useState(0);
 
-  const handleAddGratitude = () => {
-    toast({
-      title: "Skvělá práce!",
-      description: "Vděčnost je klíčem ke spokojenosti. Získáváš 15 bodů!",
-      duration: 3000,
+  // Fetch streak
+  const fetchStreak = async () => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) throw new Error("Not authenticated");
+    
+    const { data, error } = await supabase.rpc('get_gratitude_streak', {
+      user_uuid: user.id
     });
+    
+    if (error) throw error;
+    return data;
+  };
+
+  // Fetch today's entries if they exist
+  const fetchTodayEntries = async () => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) throw new Error("Not authenticated");
+
+    const { data, error } = await supabase
+      .from('gratitude_entries')
+      .select('*')
+      .eq('user_id', user.id)
+      .eq('entry_date', new Date().toISOString().split('T')[0])
+      .single();
+
+    if (error && error.code !== 'PGRST116') throw error;
+    return data;
+  };
+
+  // Fetch history
+  const fetchHistory = async () => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) throw new Error("Not authenticated");
+
+    const { data, error } = await supabase
+      .from('gratitude_entries')
+      .select('*')
+      .eq('user_id', user.id)
+      .order('entry_date', { ascending: false })
+      .limit(7);
+
+    if (error) throw error;
+    return data;
+  };
+
+  const { data: streakData } = useQuery({
+    queryKey: ['gratitudeStreak'],
+    queryFn: fetchStreak
+  });
+
+  const { data: todayEntries } = useQuery({
+    queryKey: ['todayGratitude'],
+    queryFn: fetchTodayEntries
+  });
+
+  const { data: historyData } = useQuery({
+    queryKey: ['gratitudeHistory'],
+    queryFn: fetchHistory
+  });
+
+  useEffect(() => {
+    if (streakData !== undefined) {
+      setStreak(streakData);
+    }
+    if (todayEntries) {
+      setEntries([
+        todayEntries.entry_1 || "",
+        todayEntries.entry_2 || "",
+        todayEntries.entry_3 || ""
+      ]);
+    }
+  }, [streakData, todayEntries]);
+
+  const saveGratitudeMutation = useMutation({
+    mutationFn: async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error("Not authenticated");
+
+      const { error } = await supabase
+        .from('gratitude_entries')
+        .upsert({
+          user_id: user.id,
+          entry_date: new Date().toISOString().split('T')[0],
+          entry_1: entries[0],
+          entry_2: entries[1],
+          entry_3: entries[2]
+        });
+
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['gratitudeStreak'] });
+      queryClient.invalidateQueries({ queryKey: ['gratitudeHistory'] });
+      toast({
+        title: "Uloženo!",
+        description: "Vaše vděčnost byla úspěšně uložena.",
+      });
+    }
+  });
+
+  const handleInputChange = (index: number, value: string) => {
+    const newEntries = [...entries];
+    newEntries[index] = value;
+    setEntries(newEntries as [string, string, string]);
+
+    // If all entries are filled, save automatically
+    if (newEntries.every(entry => entry.trim() !== "")) {
+      saveGratitudeMutation.mutate();
+    }
   };
 
   return (
@@ -27,35 +145,50 @@ const Gratitude = () => {
         <div className="flex items-center justify-center gap-4">
           <div className="flex items-center gap-2 bg-secondary/50 px-4 py-2 rounded-full">
             <Heart className="w-5 h-5 text-primary" />
-            <span className="text-white">5 dní v řadě</span>
+            <span className="text-white">{streak} dní v řadě</span>
           </div>
         </div>
 
         <Card className="p-6 space-y-6 backdrop-blur-lg bg-card border-white/10">
-          <div className="flex justify-between items-center">
+          <div className="space-y-4">
             <h2 className="text-xl font-semibold text-white">Dnešní vděčnost</h2>
-            <Button onClick={handleAddGratitude}>
-              <Plus className="mr-2" size={20} />
-              Přidat záznam
-            </Button>
-          </div>
-
-          <div className="grid gap-4 md:grid-cols-3">
-            <div className="group p-4 rounded-lg bg-secondary/50 min-h-[150px] flex items-center justify-center hover:bg-secondary/60 transition-colors cursor-pointer">
-              <p className="text-white/50 group-hover:text-white/80 transition-colors">První věc, za kterou jsem dnes vděčný/á...</p>
-            </div>
-            <div className="group p-4 rounded-lg bg-secondary/50 min-h-[150px] flex items-center justify-center hover:bg-secondary/60 transition-colors cursor-pointer">
-              <p className="text-white/50 group-hover:text-white/80 transition-colors">Druhá věc, za kterou jsem dnes vděčný/á...</p>
-            </div>
-            <div className="group p-4 rounded-lg bg-secondary/50 min-h-[150px] flex items-center justify-center hover:bg-secondary/60 transition-colors cursor-pointer">
-              <p className="text-white/50 group-hover:text-white/80 transition-colors">Třetí věc, za kterou jsem dnes vděčný/á...</p>
+            <div className="grid gap-4 md:grid-cols-3">
+              {[0, 1, 2].map((index) => (
+                <div key={index} className="space-y-2">
+                  <Input
+                    value={entries[index]}
+                    onChange={(e) => handleInputChange(index, e.target.value)}
+                    placeholder={`${index + 1}. věc, za kterou jsem dnes vděčný/á...`}
+                    className="bg-secondary/50 border-white/10 text-white placeholder:text-white/50"
+                  />
+                </div>
+              ))}
             </div>
           </div>
         </Card>
+
+        {historyData && historyData.length > 0 && (
+          <Card className="p-6 space-y-6 backdrop-blur-lg bg-card border-white/10">
+            <h2 className="text-xl font-semibold text-white">Historie vděčnosti</h2>
+            <div className="space-y-4">
+              {historyData.map((entry: GratitudeEntry) => (
+                <div key={entry.id} className="p-4 rounded-lg bg-secondary/30">
+                  <div className="text-sm text-white/60 mb-2">
+                    {new Date(entry.entry_date).toLocaleDateString('cs-CZ')}
+                  </div>
+                  <ul className="list-disc list-inside space-y-1 text-white/80">
+                    {entry.entry_1 && <li>{entry.entry_1}</li>}
+                    {entry.entry_2 && <li>{entry.entry_2}</li>}
+                    {entry.entry_3 && <li>{entry.entry_3}</li>}
+                  </ul>
+                </div>
+              ))}
+            </div>
+          </Card>
+        )}
       </div>
     </Layout>
   );
 };
 
 export default Gratitude;
-

@@ -235,6 +235,36 @@ export type Database = {
         }
         Relationships: []
       }
+      gratitude_entries: {
+        Row: {
+          created_at: string | null
+          entry_1: string | null
+          entry_2: string | null
+          entry_3: string | null
+          entry_date: string | null
+          id: string
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          entry_1?: string | null
+          entry_2?: string | null
+          entry_3?: string | null
+          entry_date?: string | null
+          id?: string
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          entry_1?: string | null
+          entry_2?: string | null
+          entry_3?: string | null
+          entry_date?: string | null
+          id?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       habit_categories: {
         Row: {
           color: string
@@ -720,7 +750,12 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      get_gratitude_streak: {
+        Args: {
+          user_uuid: string
+        }
+        Returns: number
+      }
     }
     Enums: {
       [_ in never]: never
