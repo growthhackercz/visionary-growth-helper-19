@@ -39,6 +39,54 @@ export type Database = {
         }
         Relationships: []
       }
+      area_progress: {
+        Row: {
+          area_id: string | null
+          best_streak: number | null
+          created_at: string
+          current_streak: number | null
+          id: string
+          last_completed_at: string | null
+          total_completed: number | null
+          user_id: string | null
+        }
+        Insert: {
+          area_id?: string | null
+          best_streak?: number | null
+          created_at?: string
+          current_streak?: number | null
+          id?: string
+          last_completed_at?: string | null
+          total_completed?: number | null
+          user_id?: string | null
+        }
+        Update: {
+          area_id?: string | null
+          best_streak?: number | null
+          created_at?: string
+          current_streak?: number | null
+          id?: string
+          last_completed_at?: string | null
+          total_completed?: number | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "area_progress_area_id_fkey"
+            columns: ["area_id"]
+            isOneToOne: false
+            referencedRelation: "challenge_areas"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "area_progress_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       bible_books: {
         Row: {
           code: string
@@ -118,8 +166,37 @@ export type Database = {
           },
         ]
       }
+      challenge_areas: {
+        Row: {
+          color: string
+          created_at: string
+          description: string | null
+          icon: string
+          id: string
+          name: string
+        }
+        Insert: {
+          color: string
+          created_at?: string
+          description?: string | null
+          icon: string
+          id?: string
+          name: string
+        }
+        Update: {
+          color?: string
+          created_at?: string
+          description?: string | null
+          icon?: string
+          id?: string
+          name?: string
+        }
+        Relationships: []
+      }
       daily_challenges: {
         Row: {
+          area_id: string | null
+          category: string
           created_at: string
           date: string | null
           description: string
@@ -130,6 +207,8 @@ export type Database = {
           xp_reward: number
         }
         Insert: {
+          area_id?: string | null
+          category?: string
           created_at?: string
           date?: string | null
           description: string
@@ -140,6 +219,8 @@ export type Database = {
           xp_reward?: number
         }
         Update: {
+          area_id?: string | null
+          category?: string
           created_at?: string
           date?: string | null
           description?: string
@@ -149,7 +230,15 @@ export type Database = {
           title?: string
           xp_reward?: number
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "daily_challenges_area_id_fkey"
+            columns: ["area_id"]
+            isOneToOne: false
+            referencedRelation: "challenge_areas"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       daily_ratings: {
         Row: {
@@ -520,6 +609,44 @@ export type Database = {
         }
         Relationships: []
       }
+      meal_plans: {
+        Row: {
+          created_at: string
+          id: string
+          meals: Json
+          shopping_list: Json | null
+          user_id: string | null
+          week_end: string
+          week_start: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          meals: Json
+          shopping_list?: Json | null
+          user_id?: string | null
+          week_end: string
+          week_start: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          meals?: Json
+          shopping_list?: Json | null
+          user_id?: string | null
+          week_end?: string
+          week_start?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "meal_plans_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       moods: {
         Row: {
           created_at: string
@@ -723,6 +850,48 @@ export type Database = {
           notifications_enabled?: boolean | null
           points?: number
           updated_at?: string
+        }
+        Relationships: []
+      }
+      recipes: {
+        Row: {
+          created_at: string
+          description: string | null
+          difficulty: string
+          id: string
+          image_url: string | null
+          ingredients: Json
+          instructions: string[]
+          name: string
+          nutrition_info: Json | null
+          preparation_time: number
+          tags: string[] | null
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          difficulty?: string
+          id?: string
+          image_url?: string | null
+          ingredients: Json
+          instructions: string[]
+          name: string
+          nutrition_info?: Json | null
+          preparation_time: number
+          tags?: string[] | null
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          difficulty?: string
+          id?: string
+          image_url?: string | null
+          ingredients?: Json
+          instructions?: string[]
+          name?: string
+          nutrition_info?: Json | null
+          preparation_time?: number
+          tags?: string[] | null
         }
         Relationships: []
       }
