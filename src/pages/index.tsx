@@ -7,6 +7,7 @@ import { DashboardHeader } from "@/components/dashboard/DashboardHeader";
 import { DashboardStats } from "@/components/dashboard/DashboardStats";
 import { QuickActions } from "@/components/dashboard/QuickActions";
 import { DailyChallenge } from "@/components/dashboard/DailyChallenge";
+import { ChallengeCategories } from "@/components/dashboard/ChallengeCategories";
 import { DashboardCategories } from "@/components/dashboard/DashboardCategories";
 import { DashboardCalendar } from "@/components/dashboard/DashboardCalendar";
 import { MoodTracker } from "@/components/dashboard/MoodTracker";
@@ -125,6 +126,8 @@ const Index = () => {
         />
 
         <DailyChallenge />
+
+        <ChallengeCategories />
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <MoodTracker />
