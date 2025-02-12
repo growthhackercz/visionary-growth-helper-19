@@ -118,6 +118,39 @@ export type Database = {
           },
         ]
       }
+      daily_challenges: {
+        Row: {
+          created_at: string
+          date: string | null
+          description: string
+          difficulty: string
+          id: string
+          is_completed: boolean | null
+          title: string
+          xp_reward: number
+        }
+        Insert: {
+          created_at?: string
+          date?: string | null
+          description: string
+          difficulty?: string
+          id?: string
+          is_completed?: boolean | null
+          title: string
+          xp_reward?: number
+        }
+        Update: {
+          created_at?: string
+          date?: string | null
+          description?: string
+          difficulty?: string
+          id?: string
+          is_completed?: boolean | null
+          title?: string
+          xp_reward?: number
+        }
+        Relationships: []
+      }
       daily_ratings: {
         Row: {
           created_at: string
@@ -398,10 +431,13 @@ export type Database = {
           category_id: string
           created_at: string
           current_streak: number
+          energy_required: number | null
           frequency: string
           id: string
           name: string
           notes: string | null
+          optimal_day_part: string | null
+          optimal_time: string | null
           priority: number | null
           reminder_days: string[] | null
           reminder_time: string | null
@@ -413,10 +449,13 @@ export type Database = {
           category_id: string
           created_at?: string
           current_streak?: number
+          energy_required?: number | null
           frequency?: string
           id?: string
           name: string
           notes?: string | null
+          optimal_day_part?: string | null
+          optimal_time?: string | null
           priority?: number | null
           reminder_days?: string[] | null
           reminder_time?: string | null
@@ -428,10 +467,13 @@ export type Database = {
           category_id?: string
           created_at?: string
           current_streak?: number
+          energy_required?: number | null
           frequency?: string
           id?: string
           name?: string
           notes?: string | null
+          optimal_day_part?: string | null
+          optimal_time?: string | null
           priority?: number | null
           reminder_days?: string[] | null
           reminder_time?: string | null
@@ -447,6 +489,36 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      level_system: {
+        Row: {
+          created_at: string
+          icon: string
+          id: string
+          level_number: number
+          rewards: string[] | null
+          title: string
+          xp_required: number
+        }
+        Insert: {
+          created_at?: string
+          icon: string
+          id?: string
+          level_number: number
+          rewards?: string[] | null
+          title: string
+          xp_required: number
+        }
+        Update: {
+          created_at?: string
+          icon?: string
+          id?: string
+          level_number?: number
+          rewards?: string[] | null
+          title?: string
+          xp_required?: number
+        }
+        Relationships: []
       }
       moods: {
         Row: {
@@ -624,6 +696,8 @@ export type Database = {
       profiles: {
         Row: {
           created_at: string
+          current_level: number | null
+          current_xp: number | null
           email: string | null
           id: string
           notifications_enabled: boolean | null
@@ -632,6 +706,8 @@ export type Database = {
         }
         Insert: {
           created_at?: string
+          current_level?: number | null
+          current_xp?: number | null
           email?: string | null
           id: string
           notifications_enabled?: boolean | null
@@ -640,6 +716,8 @@ export type Database = {
         }
         Update: {
           created_at?: string
+          current_level?: number | null
+          current_xp?: number | null
           email?: string | null
           id?: string
           notifications_enabled?: boolean | null
@@ -744,6 +822,50 @@ export type Database = {
           },
         ]
       }
+      user_daily_progress: {
+        Row: {
+          created_at: string
+          date: string | null
+          energy_level: number | null
+          id: string
+          mood_score: number | null
+          notes: string | null
+          total_habits_completed: number | null
+          total_tasks_completed: number | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          date?: string | null
+          energy_level?: number | null
+          id?: string
+          mood_score?: number | null
+          notes?: string | null
+          total_habits_completed?: number | null
+          total_tasks_completed?: number | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          date?: string | null
+          energy_level?: number | null
+          id?: string
+          mood_score?: number | null
+          notes?: string | null
+          total_habits_completed?: number | null
+          total_tasks_completed?: number | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_daily_progress_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_rewards: {
         Row: {
           claimed_at: string
@@ -773,6 +895,44 @@ export type Database = {
           },
           {
             foreignKeyName: "user_rewards_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_streaks: {
+        Row: {
+          best_streak: number | null
+          created_at: string
+          current_streak: number | null
+          id: string
+          last_update: string | null
+          streak_type: string
+          user_id: string | null
+        }
+        Insert: {
+          best_streak?: number | null
+          created_at?: string
+          current_streak?: number | null
+          id?: string
+          last_update?: string | null
+          streak_type: string
+          user_id?: string | null
+        }
+        Update: {
+          best_streak?: number | null
+          created_at?: string
+          current_streak?: number | null
+          id?: string
+          last_update?: string | null
+          streak_type?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_streaks_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "profiles"
