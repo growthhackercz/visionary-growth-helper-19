@@ -5,6 +5,7 @@ import { PomodoroTimer } from "./PomodoroTimer";
 import { useAuth } from "./AuthProvider";
 import { Button } from "./ui/button";
 import { LogOut } from "lucide-react";
+import { HabitReminders } from "./habits/HabitReminders";
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -36,6 +37,7 @@ export function Layout({ children }: LayoutProps) {
           </div>
         </main>
         <PomodoroTimer />
+        <HabitReminders />
       </div>
     </SidebarProvider>
   );
