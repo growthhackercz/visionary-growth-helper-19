@@ -898,6 +898,35 @@ export type Database = {
         }
         Relationships: []
       }
+      reward_claims: {
+        Row: {
+          claimed_at: string | null
+          id: string
+          reward_id: string
+          user_id: string
+        }
+        Insert: {
+          claimed_at?: string | null
+          id?: string
+          reward_id: string
+          user_id: string
+        }
+        Update: {
+          claimed_at?: string | null
+          id?: string
+          reward_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reward_claims_reward_id_fkey"
+            columns: ["reward_id"]
+            isOneToOne: false
+            referencedRelation: "rewards"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       rewards: {
         Row: {
           cost: number
@@ -1037,6 +1066,27 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      user_points: {
+        Row: {
+          id: string
+          points: number | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          points?: number | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          id?: string
+          points?: number | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
       }
       user_rewards: {
         Row: {
