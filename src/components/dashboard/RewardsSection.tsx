@@ -1,6 +1,6 @@
 
 import { Card } from "@/components/ui/card";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Coffee, Film, Gamepad, Utensils, Sun } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -16,6 +16,8 @@ const iconMap: Record<string, React.ReactNode> = {
 
 export const RewardsSection = () => {
   const { toast } = useToast();
+  const queryClient = useQueryClient();
+
   const { data: rewards } = useQuery({
     queryKey: ['rewards'],
     queryFn: async () => {
@@ -27,19 +29,79 @@ export const RewardsSection = () => {
     },
   });
 
+  const { data: userPoints } = useQuery({
+    queryKey: ['user_points'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('user_points')
+        .select('*')
+        .single();
+      if (error && error.code !== 'PGRST116') throw error;
+      return data;
+    },
+  });
+
+  const claimRewardMutation = useMutation({
+    mutationFn: async ({ rewardId, cost }: { rewardId: string, cost: number }) => {
+      const { error: claimError } = await supabase
+        .from('reward_claims')
+        .insert([
+          { reward_id: rewardId }
+        ]);
+      if (claimError) throw claimError;
+
+      const { error: pointsError } = await supabase
+        .from('user_points')
+        .upsert([
+          { 
+            points: (userPoints?.points || 0) - cost,
+            ...(userPoints ? {} : { user_id: (await supabase.auth.getUser()).data.user?.id })
+          }
+        ], {
+          onConflict: 'user_id'
+        });
+      if (pointsError) throw pointsError;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['user_points'] });
+      queryClient.invalidateQueries({ queryKey: ['reward_claims'] });
+    },
+  });
+
   const handleClaimReward = async (rewardId: string, cost: number) => {
-    // In a real app, we would check if user has enough points
-    // and handle the claiming process
-    toast({
-      title: "Funkce bude brzy k dispozici",
-      description: "Systém odměn je ve vývoji.",
-      duration: 3000,
-    });
+    const currentPoints = userPoints?.points || 0;
+    
+    if (currentPoints < cost) {
+      toast({
+        title: "Nedostatek bodů",
+        description: "Nemáte dostatek bodů pro získání této odměny.",
+        duration: 3000,
+      });
+      return;
+    }
+
+    try {
+      await claimRewardMutation.mutateAsync({ rewardId, cost });
+      toast({
+        title: "Odměna získána!",
+        description: "Vaše odměna byla úspěšně získána.",
+        duration: 3000,
+      });
+    } catch (error) {
+      toast({
+        title: "Chyba",
+        description: "Při získávání odměny došlo k chybě.",
+        duration: 3000,
+      });
+    }
   };
 
   return (
     <Card className="p-6 space-y-4 backdrop-blur-lg bg-card/30 border-white/10">
-      <h2 className="text-2xl font-bold text-white">Odměny</h2>
+      <div className="flex justify-between items-center">
+        <h2 className="text-2xl font-bold text-white">Odměny</h2>
+        <span className="text-white/80">Dostupné body: {userPoints?.points || 0}</span>
+      </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {rewards?.map((reward) => (
           <div
@@ -59,8 +121,9 @@ export const RewardsSection = () => {
                 variant="secondary"
                 className="bg-white/10 hover:bg-white/20"
                 onClick={() => handleClaimReward(reward.id, reward.cost)}
+                disabled={claimRewardMutation.isPending || (userPoints?.points || 0) < reward.cost}
               >
-                Získat odměnu
+                {claimRewardMutation.isPending ? "Získávám..." : "Získat odměnu"}
               </Button>
             </div>
           </div>
