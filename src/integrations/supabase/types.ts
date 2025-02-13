@@ -485,6 +485,7 @@ export type Database = {
           scheduled_for: string
           sent_at: string | null
           title: string
+          user_id: string | null
         }
         Insert: {
           body: string
@@ -494,6 +495,7 @@ export type Database = {
           scheduled_for: string
           sent_at?: string | null
           title: string
+          user_id?: string | null
         }
         Update: {
           body?: string
@@ -503,6 +505,7 @@ export type Database = {
           scheduled_for?: string
           sent_at?: string | null
           title?: string
+          user_id?: string | null
         }
         Relationships: [
           {
