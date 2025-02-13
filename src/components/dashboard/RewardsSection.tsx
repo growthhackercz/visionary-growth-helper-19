@@ -102,34 +102,59 @@ export const RewardsSection = () => {
   };
 
   return (
-    <Card className="p-6 space-y-4 backdrop-blur-lg bg-card/30 border-white/10">
+    <Card className="p-8 space-y-6 backdrop-blur-xl bg-gradient-to-br from-black/30 via-black/20 to-black/10 border-white/10 shadow-lg">
       <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-bold text-white">Odměny</h2>
-        <span className="text-white/80">Dostupné body: {userPoints?.points || 0}</span>
+        <div className="space-y-1">
+          <h2 className="text-3xl font-bold bg-gradient-to-r from-white to-white/70 bg-clip-text text-transparent">
+            Odměny
+          </h2>
+          <p className="text-white/60">Získejte speciální odměny za své úspěchy</p>
+        </div>
+        <div className="px-4 py-2 rounded-full bg-white/5 border border-white/10 shadow-inner">
+          <span className="text-lg font-medium bg-gradient-to-r from-white to-white/70 bg-clip-text text-transparent">
+            {userPoints?.points || 0} bodů
+          </span>
+        </div>
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {rewards?.map((reward) => (
           <div
             key={reward.id}
-            className="p-4 rounded-lg bg-white/5 border border-white/10 space-y-3"
+            className="group relative overflow-hidden rounded-xl transition-all duration-300 hover:translate-y-[-2px]"
           >
-            <div className="flex items-center gap-3">
-              {iconMap[reward.icon]}
-              <div>
-                <h3 className="font-semibold text-white">{reward.name}</h3>
-                <p className="text-sm text-white/60">{reward.description}</p>
+            <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+            
+            <div className="relative p-6 backdrop-blur-lg bg-white/5 border border-white/10 rounded-xl space-y-4 transition-colors duration-300 group-hover:bg-white/10">
+              <div className="flex items-center gap-4">
+                <div className="p-3 rounded-lg bg-white/5 border border-white/10 group-hover:scale-110 transition-transform duration-300">
+                  {iconMap[reward.icon]}
+                </div>
+                <div>
+                  <h3 className="font-semibold text-white text-lg">{reward.name}</h3>
+                  <p className="text-sm text-white/60">{reward.description}</p>
+                </div>
               </div>
-            </div>
-            <div className="flex justify-between items-center">
-              <span className="text-sm text-white/80">{reward.cost} bodů</span>
-              <Button
-                variant="secondary"
-                className="bg-white/10 hover:bg-white/20"
-                onClick={() => handleClaimReward(reward.id, reward.cost)}
-                disabled={claimRewardMutation.isPending || (userPoints?.points || 0) < reward.cost}
-              >
-                {claimRewardMutation.isPending ? "Získávám..." : "Získat odměnu"}
-              </Button>
+              
+              <div className="flex justify-between items-center pt-2">
+                <div className="flex items-center gap-2">
+                  <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
+                  <span className="text-sm text-white/80">{reward.cost} bodů</span>
+                </div>
+                <Button
+                  variant="secondary"
+                  className="bg-gradient-to-r from-primary/80 to-primary hover:from-primary hover:to-primary/80 text-white border-none shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-105 disabled:hover:scale-100 disabled:opacity-50"
+                  onClick={() => handleClaimReward(reward.id, reward.cost)}
+                  disabled={claimRewardMutation.isPending || (userPoints?.points || 0) < reward.cost}
+                >
+                  {claimRewardMutation.isPending ? (
+                    <span className="flex items-center gap-2">
+                      <div className="w-4 h-4 rounded-full border-2 border-white/20 border-t-white animate-spin" />
+                      Získávám...
+                    </span>
+                  ) : "Získat odměnu"}
+                </Button>
+              </div>
             </div>
           </div>
         ))}
