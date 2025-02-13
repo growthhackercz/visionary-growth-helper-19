@@ -31,16 +31,46 @@ export const RewardsSection = () => {
     },
   });
 
+  // Initialize user points if they don't exist
+  const initializeUserPoints = async () => {
+    if (!user?.id) return null;
+    
+    const { data, error } = await supabase
+      .from('user_points')
+      .upsert({
+        user_id: user.id,
+        points: 0
+      }, {
+        onConflict: 'user_id'
+      })
+      .select()
+      .single();
+      
+    if (error && error.code !== 'PGRST116') throw error;
+    return data;
+  };
+
   const { data: userPoints } = useQuery({
-    queryKey: ['user_points'],
+    queryKey: ['user_points', user?.id],
     queryFn: async () => {
+      if (!user?.id) return null;
+
       const { data, error } = await supabase
         .from('user_points')
         .select('*')
-        .single();
+        .eq('user_id', user.id)
+        .maybeSingle();
+
       if (error && error.code !== 'PGRST116') throw error;
+      
+      // If no points record exists, create one
+      if (!data) {
+        return initializeUserPoints();
+      }
+
       return data;
     },
+    enabled: !!user?.id,
   });
 
   const claimRewardMutation = useMutation({
