@@ -5,6 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Coffee, Film, Gamepad, Utensils, Sun } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/components/AuthProvider";
 
 const iconMap: Record<string, React.ReactNode> = {
   Coffee: <Coffee className="w-6 h-6 text-brown-500" />,
@@ -17,6 +18,7 @@ const iconMap: Record<string, React.ReactNode> = {
 export const RewardsSection = () => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const { user } = useAuth();
 
   const { data: rewards } = useQuery({
     queryKey: ['rewards'],
@@ -43,21 +45,24 @@ export const RewardsSection = () => {
 
   const claimRewardMutation = useMutation({
     mutationFn: async ({ rewardId, cost }: { rewardId: string, cost: number }) => {
+      if (!user?.id) throw new Error("User not authenticated");
+
+      // Insert reward claim
       const { error: claimError } = await supabase
         .from('reward_claims')
-        .insert([
-          { reward_id: rewardId }
-        ]);
+        .insert({
+          reward_id: rewardId,
+          user_id: user.id
+        });
       if (claimError) throw claimError;
 
+      // Update user points
       const { error: pointsError } = await supabase
         .from('user_points')
-        .upsert([
-          { 
-            points: (userPoints?.points || 0) - cost,
-            ...(userPoints ? {} : { user_id: (await supabase.auth.getUser()).data.user?.id })
-          }
-        ], {
+        .upsert({
+          user_id: user.id,
+          points: (userPoints?.points || 0) - cost
+        }, {
           onConflict: 'user_id'
         });
       if (pointsError) throw pointsError;
