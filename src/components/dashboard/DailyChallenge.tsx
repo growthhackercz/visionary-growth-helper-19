@@ -32,10 +32,9 @@ export const DailyChallenge = () => {
         .from('daily_challenges')
         .select('*, challenge_areas(*)')
         .eq('date', new Date().toISOString().split('T')[0])
-        .limit(1)
-        .single();
+        .maybeSingle();
 
-      if (error) throw error;
+      if (error && error.code !== 'PGRST116') throw error;
 
       if (data) {
         setChallenge(data);
@@ -78,6 +77,25 @@ export const DailyChallenge = () => {
     return (
       <Card className="p-6 backdrop-blur-lg bg-yellow-500/5 border-yellow-500/20 animate-pulse">
         <div className="h-20 bg-yellow-500/10 rounded" />
+      </Card>
+    );
+  }
+
+  // Show placeholder when no challenge is available
+  if (!challenge) {
+    return (
+      <Card className="relative overflow-hidden backdrop-blur-xl bg-gradient-to-br from-yellow-500/10 via-orange-500/5 to-red-500/10 border-yellow-500/20 hover:bg-yellow-500/15 transition-all duration-500 group mx-4">
+        <div className="relative p-6 space-y-6">
+          <div className="flex items-center gap-3">
+            <div className="p-2 rounded-full bg-yellow-500/10">
+              <Trophy className="w-6 h-6 text-yellow-500" />
+            </div>
+            <div>
+              <h2 className="text-xl font-semibold text-white">Denní výzva</h2>
+              <p className="text-white/80">Žádná výzva není momentálně k dispozici</p>
+            </div>
+          </div>
+        </div>
       </Card>
     );
   }
