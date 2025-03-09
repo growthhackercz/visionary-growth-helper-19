@@ -6,6 +6,7 @@ import { useQuery } from "@tanstack/react-query";
 import { GratitudeStreak } from "@/components/gratitude/GratitudeStreak";
 import { GratitudeForm } from "@/components/gratitude/GratitudeForm";
 import { GratitudeHistory } from "@/components/gratitude/GratitudeHistory";
+import { Card } from "@/components/ui/card";
 
 interface GratitudeEntry {
   id: string;
@@ -88,9 +89,26 @@ const Gratitude = () => {
     <Layout>
       <div className="space-y-8 animate-fade-in">
         <section className="text-center space-y-4">
+          <div className="flex justify-center mb-2">
+            <img 
+              src="/lovable-uploads/39501548-53a3-4e80-b6f0-7c5deab9cf76.png" 
+              alt="Flow-lístek" 
+              className="h-16 mb-2" 
+            />
+          </div>
           <h1 className="text-3xl font-bold text-white">Flow lístek</h1>
           <p className="text-lg text-white/80">Váš deník vděčnosti</p>
         </section>
+
+        <div className="flex justify-center">
+          <Card className="p-6 max-w-md mx-auto backdrop-blur-lg bg-white/5 border-white/10">
+            <img 
+              src="/lovable-uploads/91b41bf6-f742-4cb8-9ad9-e3744ddbcfbc.png" 
+              alt="Flow cyklus" 
+              className="w-full max-w-sm mx-auto" 
+            />
+          </Card>
+        </div>
 
         <GratitudeStreak streak={streak} />
 
