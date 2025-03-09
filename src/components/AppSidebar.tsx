@@ -1,5 +1,5 @@
 
-import { Home, Brain, CheckSquare, ListTodo, Calendar, Heart, Clock, StickyNote, Shield } from "lucide-react";
+import { Home, Brain, CheckSquare, ListTodo, Calendar, Heart, Clock, StickyNote, Shield, Star, Smile } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -22,6 +22,8 @@ const menuItems = [
   { title: "Memento Mori", icon: Clock, path: "/memento-mori" },
   { title: "Nápady", icon: StickyNote, path: "/notes" },
   { title: "Asertivní práva", icon: Shield, path: "/assertive-rights" },
+  { title: "Hledání silných stránek", icon: Star, path: "/finding-strengths" },
+  { title: "Seznam emocí", icon: Smile, path: "/emotions-list" },
 ];
 
 export function AppSidebar() {
