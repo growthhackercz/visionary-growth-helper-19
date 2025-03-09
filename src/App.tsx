@@ -13,6 +13,7 @@ import Gratitude from "./pages/Gratitude";
 import MementoMori from "./pages/MementoMori";
 import Notes from "./pages/Notes";
 import NoteDetail from "./pages/NoteDetail";
+import AssertiveRights from "./pages/AssertiveRights";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -33,6 +34,7 @@ const App = () => (
           <Route path="/memento-mori" element={<MementoMori />} />
           <Route path="/notes" element={<Notes />} />
           <Route path="/notes/:id" element={<NoteDetail />} />
+          <Route path="/assertive-rights" element={<AssertiveRights />} />
           <Route path="/auth" element={<Navigate to="/" replace />} />
           <Route path="*" element={<NotFound />} />
         </Routes>

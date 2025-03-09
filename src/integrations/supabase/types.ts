@@ -9,6 +9,33 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      achievement_templates: {
+        Row: {
+          created_at: string | null
+          description: string
+          id: string
+          target_value: number
+          title: string
+          type: string
+        }
+        Insert: {
+          created_at?: string | null
+          description: string
+          id?: string
+          target_value: number
+          title: string
+          type: string
+        }
+        Update: {
+          created_at?: string | null
+          description?: string
+          id?: string
+          target_value?: number
+          title?: string
+          type?: string
+        }
+        Relationships: []
+      }
       achievements: {
         Row: {
           category: string
@@ -87,26 +114,56 @@ export type Database = {
           },
         ]
       }
+      bible_bookmarks: {
+        Row: {
+          bible_book_code: string
+          chapter_number: number
+          color: string | null
+          created_at: string | null
+          id: string
+          note: string | null
+          user_id: string | null
+          verse_number: number | null
+        }
+        Insert: {
+          bible_book_code: string
+          chapter_number: number
+          color?: string | null
+          created_at?: string | null
+          id?: string
+          note?: string | null
+          user_id?: string | null
+          verse_number?: number | null
+        }
+        Update: {
+          bible_book_code?: string
+          chapter_number?: number
+          color?: string | null
+          created_at?: string | null
+          id?: string
+          note?: string | null
+          user_id?: string | null
+          verse_number?: number | null
+        }
+        Relationships: []
+      }
       bible_books: {
         Row: {
           code: string
           id: number
           name: string
-          ordinal: number
           testament: string
         }
         Insert: {
           code: string
           id?: number
           name: string
-          ordinal: number
           testament: string
         }
         Update: {
           code?: string
           id?: number
           name?: string
-          ordinal?: number
           testament?: string
         }
         Relationships: []
@@ -114,16 +171,19 @@ export type Database = {
       bible_chapters: {
         Row: {
           book_id: number | null
+          chapter_name: string | null
           chapter_number: number
           id: number
         }
         Insert: {
           book_id?: number | null
+          chapter_name?: string | null
           chapter_number: number
           id?: number
         }
         Update: {
           book_id?: number | null
+          chapter_name?: string | null
           chapter_number?: number
           id?: number
         }
@@ -135,30 +195,71 @@ export type Database = {
             referencedRelation: "bible_books"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "fk_book"
+            columns: ["book_id"]
+            isOneToOne: false
+            referencedRelation: "bible_books"
+            referencedColumns: ["id"]
+          },
         ]
+      }
+      bible_reading_progress: {
+        Row: {
+          chapter_id: number | null
+          completed_at: string | null
+          created_at: string | null
+          id: string
+          user_id: string | null
+        }
+        Insert: {
+          chapter_id?: number | null
+          completed_at?: string | null
+          created_at?: string | null
+          id?: string
+          user_id?: string | null
+        }
+        Update: {
+          chapter_id?: number | null
+          completed_at?: string | null
+          created_at?: string | null
+          id?: string
+          user_id?: string | null
+        }
+        Relationships: []
       }
       bible_verses: {
         Row: {
           chapter_id: number | null
           content: string
+          created_at: string | null
           id: number
           verse_number: number
         }
         Insert: {
           chapter_id?: number | null
           content: string
+          created_at?: string | null
           id?: number
           verse_number: number
         }
         Update: {
           chapter_id?: number | null
           content?: string
+          created_at?: string | null
           id?: number
           verse_number?: number
         }
         Relationships: [
           {
             foreignKeyName: "bible_verses_chapter_id_fkey"
+            columns: ["chapter_id"]
+            isOneToOne: false
+            referencedRelation: "bible_chapters"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fk_chapter"
             columns: ["chapter_id"]
             isOneToOne: false
             referencedRelation: "bible_chapters"
@@ -190,6 +291,69 @@ export type Database = {
           icon?: string
           id?: string
           name?: string
+        }
+        Relationships: []
+      }
+      daily_activities: {
+        Row: {
+          activity_type: string
+          completed_at: string | null
+          created_at: string | null
+          id: string
+          user_id: string | null
+        }
+        Insert: {
+          activity_type: string
+          completed_at?: string | null
+          created_at?: string | null
+          id?: string
+          user_id?: string | null
+        }
+        Update: {
+          activity_type?: string
+          completed_at?: string | null
+          created_at?: string | null
+          id?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      daily_bible_reading: {
+        Row: {
+          content: string | null
+          created_at: string
+          date: string
+          end_position: Json
+          id: string
+          is_completed: boolean | null
+          reading_type: string | null
+          start_position: Json
+          user_id: string | null
+          word_count: number
+        }
+        Insert: {
+          content?: string | null
+          created_at?: string
+          date?: string
+          end_position: Json
+          id?: string
+          is_completed?: boolean | null
+          reading_type?: string | null
+          start_position: Json
+          user_id?: string | null
+          word_count?: number
+        }
+        Update: {
+          content?: string | null
+          created_at?: string
+          date?: string
+          end_position?: Json
+          id?: string
+          is_completed?: boolean | null
+          reading_type?: string | null
+          start_position?: Json
+          user_id?: string | null
+          word_count?: number
         }
         Relationships: []
       }
@@ -240,6 +404,30 @@ export type Database = {
           },
         ]
       }
+      daily_insights: {
+        Row: {
+          category: string | null
+          content: string
+          created_at: string | null
+          id: string
+          is_active: boolean | null
+        }
+        Insert: {
+          category?: string | null
+          content: string
+          created_at?: string | null
+          id?: string
+          is_active?: boolean | null
+        }
+        Update: {
+          category?: string | null
+          content?: string
+          created_at?: string | null
+          id?: string
+          is_active?: boolean | null
+        }
+        Relationships: []
+      }
       daily_ratings: {
         Row: {
           created_at: string
@@ -261,6 +449,48 @@ export type Database = {
           id?: string
           notes?: string | null
           rating?: number
+        }
+        Relationships: []
+      }
+      daily_texts: {
+        Row: {
+          content: string
+          created_at: string
+          date: string | null
+          day_number: number
+          id: string
+          scripture: string | null
+          source: string | null
+          text: string | null
+          title: string | null
+          updated_at: string
+          verse_reference: string | null
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          date?: string | null
+          day_number: number
+          id?: string
+          scripture?: string | null
+          source?: string | null
+          text?: string | null
+          title?: string | null
+          updated_at?: string
+          verse_reference?: string | null
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          date?: string | null
+          day_number?: number
+          id?: string
+          scripture?: string | null
+          source?: string | null
+          text?: string | null
+          title?: string | null
+          updated_at?: string
+          verse_reference?: string | null
         }
         Relationships: []
       }
@@ -293,6 +523,7 @@ export type Database = {
           created_at: string
           date: string
           id: string
+          is_favorite: boolean | null
           meditation: string
           reference: string
           source: string | null
@@ -302,6 +533,7 @@ export type Database = {
           created_at?: string
           date: string
           id?: string
+          is_favorite?: boolean | null
           meditation: string
           reference: string
           source?: string | null
@@ -311,6 +543,7 @@ export type Database = {
           created_at?: string
           date?: string
           id?: string
+          is_favorite?: boolean | null
           meditation?: string
           reference?: string
           source?: string | null
@@ -327,6 +560,10 @@ export type Database = {
           file_type: string
           filename: string
           id: string
+          replaced_by: string | null
+          status: string | null
+          version: number | null
+          xlsx_content: Json | null
         }
         Insert: {
           content?: string | null
@@ -336,6 +573,10 @@ export type Database = {
           file_type: string
           filename: string
           id?: string
+          replaced_by?: string | null
+          status?: string | null
+          version?: number | null
+          xlsx_content?: Json | null
         }
         Update: {
           content?: string | null
@@ -345,8 +586,20 @@ export type Database = {
           file_type?: string
           filename?: string
           id?: string
+          replaced_by?: string | null
+          status?: string | null
+          version?: number | null
+          xlsx_content?: Json | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "documents_replaced_by_fkey"
+            columns: ["replaced_by"]
+            isOneToOne: false
+            referencedRelation: "documents"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       google_calendar_tokens: {
         Row: {
@@ -582,6 +835,21 @@ export type Database = {
           },
         ]
       }
+      imported_data: {
+        Row: {
+          created_at: string
+          id: number
+        }
+        Insert: {
+          created_at?: string
+          id?: number
+        }
+        Update: {
+          created_at?: string
+          id?: number
+        }
+        Relationships: []
+      }
       level_system: {
         Row: {
           created_at: string
@@ -748,11 +1016,110 @@ export type Database = {
           },
         ]
       }
+      parsing_progress: {
+        Row: {
+          completed_at: string | null
+          created_at: string | null
+          current_chapter: string | null
+          document_id: string | null
+          error: string | null
+          id: string
+          log_entries: Json[] | null
+          processed_chapters: number | null
+          started_at: string | null
+          status: string | null
+          total_chapters: number | null
+          total_verses: number | null
+        }
+        Insert: {
+          completed_at?: string | null
+          created_at?: string | null
+          current_chapter?: string | null
+          document_id?: string | null
+          error?: string | null
+          id?: string
+          log_entries?: Json[] | null
+          processed_chapters?: number | null
+          started_at?: string | null
+          status?: string | null
+          total_chapters?: number | null
+          total_verses?: number | null
+        }
+        Update: {
+          completed_at?: string | null
+          created_at?: string | null
+          current_chapter?: string | null
+          document_id?: string | null
+          error?: string | null
+          id?: string
+          log_entries?: Json[] | null
+          processed_chapters?: number | null
+          started_at?: string | null
+          status?: string | null
+          total_chapters?: number | null
+          total_verses?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "parsing_progress_document_id_fkey"
+            columns: ["document_id"]
+            isOneToOne: false
+            referencedRelation: "documents"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      personal_goals: {
+        Row: {
+          created_at: string
+          current_value: number | null
+          description: string | null
+          end_date: string | null
+          frequency: string
+          goal_type: string
+          id: string
+          is_completed: boolean | null
+          start_date: string
+          target_value: number
+          title: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          current_value?: number | null
+          description?: string | null
+          end_date?: string | null
+          frequency: string
+          goal_type: string
+          id?: string
+          is_completed?: boolean | null
+          start_date?: string
+          target_value: number
+          title: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          current_value?: number | null
+          description?: string | null
+          end_date?: string | null
+          frequency?: string
+          goal_type?: string
+          id?: string
+          is_completed?: boolean | null
+          start_date?: string
+          target_value?: number
+          title?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       personal_study_notes: {
         Row: {
           created_at: string
           id: string
           source: string
+          tags: string[] | null
           thoughts: string
           user_id: string | null
           week_end: string
@@ -762,6 +1129,7 @@ export type Database = {
           created_at?: string
           id?: string
           source?: string
+          tags?: string[] | null
           thoughts: string
           user_id?: string | null
           week_end: string
@@ -771,6 +1139,7 @@ export type Database = {
           created_at?: string
           id?: string
           source?: string
+          tags?: string[] | null
           thoughts?: string
           user_id?: string | null
           week_end?: string
@@ -987,23 +1356,168 @@ export type Database = {
         }
         Relationships: []
       }
+      spiritual_fruit_ratings: {
+        Row: {
+          created_at: string | null
+          fruit_id: string | null
+          id: string
+          notes: string | null
+          rating: number | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          fruit_id?: string | null
+          id?: string
+          notes?: string | null
+          rating?: number | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          fruit_id?: string | null
+          id?: string
+          notes?: string | null
+          rating?: number | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "spiritual_fruit_ratings_fruit_id_fkey"
+            columns: ["fruit_id"]
+            isOneToOne: false
+            referencedRelation: "spiritual_fruits"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      spiritual_fruits: {
+        Row: {
+          description: string
+          icon: string
+          id: string
+          name: string
+          scripture_reference: string
+        }
+        Insert: {
+          description: string
+          icon: string
+          id?: string
+          name: string
+          scripture_reference: string
+        }
+        Update: {
+          description?: string
+          icon?: string
+          id?: string
+          name?: string
+          scripture_reference?: string
+        }
+        Relationships: []
+      }
+      study_article_sections: {
+        Row: {
+          article_id: string
+          content: string
+          created_at: string
+          day_of_week: number | null
+          id: string
+          section_number: number
+          title: string | null
+        }
+        Insert: {
+          article_id: string
+          content: string
+          created_at?: string
+          day_of_week?: number | null
+          id?: string
+          section_number: number
+          title?: string | null
+        }
+        Update: {
+          article_id?: string
+          content?: string
+          created_at?: string
+          day_of_week?: number | null
+          id?: string
+          section_number?: number
+          title?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "study_article_sections_article_id_fkey"
+            columns: ["article_id"]
+            isOneToOne: false
+            referencedRelation: "study_articles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      study_articles: {
+        Row: {
+          article_number: number
+          content: string
+          created_at: string
+          description: string | null
+          epub_source: string | null
+          id: string
+          image_url: string | null
+          title: string
+        }
+        Insert: {
+          article_number: number
+          content: string
+          created_at?: string
+          description?: string | null
+          epub_source?: string | null
+          id?: string
+          image_url?: string | null
+          title: string
+        }
+        Update: {
+          article_number?: number
+          content?: string
+          created_at?: string
+          description?: string | null
+          epub_source?: string | null
+          id?: string
+          image_url?: string | null
+          title?: string
+        }
+        Relationships: []
+      }
       user_achievements: {
         Row: {
           achievement_id: string
+          current_value: number | null
+          description: string | null
           earned_at: string
           id: string
+          target_value: number | null
+          title: string | null
+          type: string | null
           user_id: string
         }
         Insert: {
           achievement_id: string
+          current_value?: number | null
+          description?: string | null
           earned_at?: string
           id?: string
+          target_value?: number | null
+          title?: string | null
+          type?: string | null
           user_id: string
         }
         Update: {
           achievement_id?: string
+          current_value?: number | null
+          description?: string | null
           earned_at?: string
           id?: string
+          target_value?: number | null
+          title?: string | null
+          type?: string | null
           user_id?: string
         }
         Relationships: [
@@ -1189,6 +1703,36 @@ export type Database = {
         }
         Relationships: []
       }
+      weekly_reading_plan: {
+        Row: {
+          book_code: string
+          chapter_number: number
+          created_at: string
+          daily_sections: Json
+          id: string
+          week_end: string
+          week_start: string
+        }
+        Insert: {
+          book_code: string
+          chapter_number: number
+          created_at?: string
+          daily_sections: Json
+          id?: string
+          week_end: string
+          week_start: string
+        }
+        Update: {
+          book_code?: string
+          chapter_number?: number
+          created_at?: string
+          daily_sections?: Json
+          id?: string
+          week_end?: string
+          week_start?: string
+        }
+        Relationships: []
+      }
       workbook_sections: {
         Row: {
           christian_life: string | null
@@ -1236,11 +1780,67 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      get_book_chapters: {
+        Args: {
+          book_code: string
+        }
+        Returns: {
+          id: number
+          chapter_number: number
+        }[]
+      }
       get_gratitude_streak: {
         Args: {
           user_uuid: string
         }
         Returns: number
+      }
+      get_latest_active_document: {
+        Args: {
+          doc_type: string
+        }
+        Returns: {
+          id: string
+          filename: string
+          file_path: string
+          content_type: string
+          created_at: string
+          version: number
+        }[]
+      }
+      get_weekly_reading_data: {
+        Args: {
+          p_week_start: string
+          p_week_end: string
+        }
+        Returns: Json
+      }
+      import_chapter_to_verses: {
+        Args: {
+          p_chapter_id: number
+          p_content: string
+        }
+        Returns: undefined
+      }
+      mark_document_as_replaced: {
+        Args: {
+          document_id: string
+          new_document_id: string
+        }
+        Returns: undefined
+      }
+      process_bible_chapters: {
+        Args: Record<PropertyKey, never>
+        Returns: undefined
+      }
+      split_text_to_verses: {
+        Args: {
+          text_content: string
+        }
+        Returns: {
+          verse_number: number
+          verse_text: string
+        }[]
       }
     }
     Enums: {
