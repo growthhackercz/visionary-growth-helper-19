@@ -26,7 +26,7 @@ const rightsList = [
   },
   {
     number: 5,
-    title: "ŘÍCT „JÁ NEVÍM"",
+    title: "ŘÍCT \"JÁ NEVÍM\"",
     description: "Máme právo přiznat, že něco nevíme nebo si nejsme jistí, aniž bychom se cítili méněcenní."
   },
   {
@@ -46,7 +46,7 @@ const rightsList = [
   },
   {
     number: 9,
-    title: "ŘÍCT „NEROZUMÍM." „JE MI TO JEDNO."",
+    title: "ŘÍCT \"NEROZUMÍM.\" \"JE MI TO JEDNO.\"",
     description: "Máme právo upřímně vyjádřit nedostatek porozumění nebo zájmu bez pocitu viny."
   },
   {
