@@ -28,10 +28,30 @@ export default {
         primary: {
           DEFAULT: "#ea384c",
           foreground: "#ffffff",
+          50: "rgba(234, 56, 76, 0.05)",
+          100: "rgba(234, 56, 76, 0.1)",
+          200: "rgba(234, 56, 76, 0.2)",
+          300: "rgba(234, 56, 76, 0.3)",
+          400: "rgba(234, 56, 76, 0.4)",
+          500: "rgba(234, 56, 76, 0.5)",
+          600: "rgba(234, 56, 76, 0.6)",
+          700: "rgba(234, 56, 76, 0.7)",
+          800: "rgba(234, 56, 76, 0.8)",
+          900: "rgba(234, 56, 76, 0.9)",
         },
         secondary: {
           DEFAULT: "#333333",
           foreground: "#ffffff",
+          50: "rgba(51, 51, 51, 0.05)",
+          100: "rgba(51, 51, 51, 0.1)",
+          200: "rgba(51, 51, 51, 0.2)",
+          300: "rgba(51, 51, 51, 0.3)", 
+          400: "rgba(51, 51, 51, 0.4)",
+          500: "rgba(51, 51, 51, 0.5)",
+          600: "rgba(51, 51, 51, 0.6)",
+          700: "rgba(51, 51, 51, 0.7)",
+          800: "rgba(51, 51, 51, 0.8)",
+          900: "rgba(51, 51, 51, 0.9)",
         },
         destructive: {
           DEFAULT: "hsl(var(--destructive))",
@@ -48,6 +68,7 @@ export default {
         card: {
           DEFAULT: "rgba(255, 255, 255, 0.05)",
           foreground: "#ffffff",
+          hover: "rgba(255, 255, 255, 0.08)",
         },
       },
       borderRadius: {
@@ -76,6 +97,14 @@ export default {
           "0%, 100%": { opacity: "1" },
           "50%": { opacity: "0.5" },
         },
+        "float": {
+          "0%, 100%": { transform: "translateY(0)" },
+          "50%": { transform: "translateY(-10px)" },
+        },
+        "glow": {
+          "0%, 100%": { boxShadow: "0 0 5px rgba(234, 56, 76, 0.5)" },
+          "50%": { boxShadow: "0 0 20px rgba(234, 56, 76, 0.8)" }
+        }
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
@@ -83,10 +112,15 @@ export default {
         "fade-in": "fade-in 0.3s ease-out",
         "fade-out": "fade-out 0.3s ease-out",
         "pulse-slow": "pulse-slow 3s infinite",
+        "float": "float 6s ease-in-out infinite",
+        "glow": "glow 3s ease-in-out infinite"
       },
       gridTemplateColumns: {
         "15": "repeat(15, minmax(0, 1fr))",
       },
+      backdropBlur: {
+        xs: "2px",
+      }
     },
   },
   plugins: [require("tailwindcss-animate")],
