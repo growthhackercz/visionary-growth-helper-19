@@ -1,6 +1,6 @@
 
 import { Layout } from "@/components/Layout";
-import { Card } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Shield } from "lucide-react";
 
 const rightsList = [
@@ -61,26 +61,28 @@ const AssertiveRights = () => {
     <Layout>
       <div className="space-y-8 animate-fade-in pb-8">
         <section className="text-center space-y-4">
-          <h1 className="text-3xl font-bold text-white flex items-center justify-center gap-2">
+          <div className="inline-flex items-center justify-center bg-primary/10 p-3 rounded-full mb-4">
             <Shield className="text-primary h-8 w-8" />
+          </div>
+          <h1 className="text-3xl font-bold bg-gradient-to-r from-white to-white/70 bg-clip-text text-transparent">
             Asertivní práva
           </h1>
-          <p className="text-lg text-white/80">
+          <p className="text-lg text-white/80 max-w-lg mx-auto">
             Máme právo respektovat sebe i ostatní
           </p>
         </section>
 
         <div className="grid gap-6">
           {rightsList.map((right) => (
-            <Card key={right.number} className="backdrop-blur-lg bg-card border-white/10 overflow-hidden">
+            <Card key={right.number} className="backdrop-blur-xl bg-white/5 border-white/10 overflow-hidden transition-all hover:border-primary/30 hover:bg-white/7">
               <div className="flex flex-col md:flex-row">
-                <div className="bg-primary text-white font-bold text-2xl p-6 flex items-center justify-center md:w-24">
+                <div className="bg-gradient-to-r from-primary to-primary/80 text-white font-bold text-2xl p-6 flex items-center justify-center md:w-24">
                   {right.number}
                 </div>
-                <div className="p-6">
-                  <h2 className="text-xl font-semibold text-white mb-2">{right.title}</h2>
-                  <p className="text-white/80">{right.description}</p>
-                </div>
+                <CardContent className="p-6">
+                  <h2 className="text-xl font-semibold text-white mb-3">{right.title}</h2>
+                  <p className="text-white/80 leading-relaxed">{right.description}</p>
+                </CardContent>
               </div>
             </Card>
           ))}
