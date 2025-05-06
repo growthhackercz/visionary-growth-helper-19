@@ -21,22 +21,25 @@ export const HabitCard = ({ habit, onComplete }: HabitCardProps) => {
   const progressPercentage = (habit.habit_progress?.filter((p: any) => p.status === 'success').length || 0) / 30 * 100;
 
   return (
-    <Card className="p-6 backdrop-blur-lg bg-card/30 border-white/10 hover:bg-card/40 transition-colors">
+    <Card 
+      variant="interactive" 
+      className="p-6 transition-all duration-300"
+    >
       <div className="space-y-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            {categoryIcons[habit.habit_categories.name]}
+            <span className="icon-md icon-primary">{categoryIcons[habit.habit_categories.name]}</span>
             <h3 className="text-lg font-semibold text-white">{habit.name}</h3>
           </div>
           {isCompletedToday ? (
-            <div className="bg-green-500/20 text-green-500 p-2 rounded-full">
-              <Check className="h-5 w-5" />
+            <div className="bg-success/20 text-success p-2 rounded-full">
+              <Check className="icon-sm" />
             </div>
           ) : (
             <Button
               size="sm"
+              variant="soft-success"
               onClick={onComplete}
-              className="bg-green-500 hover:bg-green-600"
             >
               Splnit
             </Button>
@@ -53,12 +56,12 @@ export const HabitCard = ({ habit, onComplete }: HabitCardProps) => {
           
           <div className="flex justify-between items-center">
             <div className="flex items-center gap-1 text-yellow-500">
-              <Flame className="h-4 w-4" />
+              <Flame className="icon-sm" />
               <span className="text-sm">Série: {habit.current_streak}</span>
             </div>
             {habit.best_streak > 0 && (
               <div className="flex items-center gap-1 text-purple-500">
-                <Award className="h-4 w-4" />
+                <Award className="icon-sm" />
                 <span className="text-sm">Rekord: {habit.best_streak}</span>
               </div>
             )}
@@ -68,4 +71,3 @@ export const HabitCard = ({ habit, onComplete }: HabitCardProps) => {
     </Card>
   );
 };
-

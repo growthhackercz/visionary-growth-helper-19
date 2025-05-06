@@ -18,6 +18,11 @@ const cardVariants = cva(
         warning: "bg-warning/10 border-warning/20",
         destructive: "bg-destructive/10 border-destructive/20",
         accent: "bg-accent/10 border-accent/20",
+        // New variants
+        interactive: "bg-card hover:bg-card/80 transition-colors cursor-pointer border-white/5 hover:border-white/20",
+        highlighted: "backdrop-blur-lg bg-primary/5 border-primary/20 shadow-[0_0_15px_rgba(234,56,76,0.15)]",
+        info: "backdrop-blur-lg bg-accent/5 border-accent/20 shadow-[0_0_15px_rgba(59,130,246,0.15)]",
+        action: "backdrop-blur-lg bg-white/5 border-white/10 hover:bg-white/10 hover:border-white/20 transition-all duration-250 cursor-pointer",
       },
       size: {
         default: "p-6",

@@ -62,7 +62,7 @@ export default function Notes() {
 
   return (
     <Layout>
-      <div className="max-w-2xl mx-auto w-full space-y-4 animate-fade-in">
+      <div className="content-container-sm space-y-6 animate-fade-in">
         <div className="space-y-2">
           <h1 className="text-3xl font-bold">Všechny poznámky</h1>
           <p className="text-muted-foreground">
@@ -71,20 +71,22 @@ export default function Notes() {
         </div>
 
         <div className="relative">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-5 h-5" />
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground icon-sm" />
           <Input
-            className="pl-10 bg-muted/50"
+            variant="glass"
+            className="pl-10"
             placeholder="Hledat poznámky"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
         </div>
 
-        <div className="space-y-2">
+        <div className="space-y-3">
           {filteredNotes.map((note) => (
             <Card
               key={note.id}
-              className="p-4 hover:bg-muted/50 transition-colors cursor-pointer"
+              variant="interactive"
+              className="p-4 cursor-pointer"
               onClick={() => navigate(`/notes/${note.id}`)}
             >
               <h2 className="font-medium">{note.title}</h2>
@@ -101,11 +103,12 @@ export default function Notes() {
         </div>
 
         <Button
+          variant="gradient"
           size="icon"
           className="fixed bottom-6 right-6 w-14 h-14 rounded-full shadow-lg"
           onClick={() => navigate('/notes/new')}
         >
-          <PlusCircle className="w-6 h-6" />
+          <PlusCircle className="icon-lg" />
         </Button>
       </div>
     </Layout>

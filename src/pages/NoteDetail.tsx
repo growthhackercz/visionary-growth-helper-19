@@ -127,46 +127,52 @@ export default function NoteDetail() {
 
   return (
     <Layout>
-      <div className="max-w-2xl mx-auto w-full space-y-4">
-        <Card className="p-6 space-y-4">
-          <Input
-            placeholder="Nadpis poznámky"
-            value={note.title}
-            onChange={(e) => setNote(prev => ({ ...prev, title: e.target.value }))}
-            className="text-lg font-medium"
-          />
-          <Input
-            placeholder="Podnadpis (volitelné)"
-            value={note.subtitle}
-            onChange={(e) => setNote(prev => ({ ...prev, subtitle: e.target.value }))}
-            className="text-muted-foreground"
-          />
-          <Textarea
-            placeholder="Obsah poznámky..."
-            value={note.content}
-            onChange={(e) => setNote(prev => ({ ...prev, content: e.target.value }))}
-            className="min-h-[300px]"
-          />
-          <div className="flex justify-between">
-            <div className="space-x-2">
-              <Button onClick={() => navigate('/notes')} variant="outline">
-                Zrušit
-              </Button>
-              {!isNewNote && (
-                <Button 
-                  onClick={() => deleteMutation.mutate()}
-                  variant="destructive"
-                >
-                  Smazat
+      <div className="content-container-md space-y-4">
+        <Card variant="glass" className="p-standard">
+          <div className="form-section">
+            <Input
+              variant="glass"
+              placeholder="Nadpis poznámky"
+              value={note.title}
+              onChange={(e) => setNote(prev => ({ ...prev, title: e.target.value }))}
+              className="text-lg font-medium"
+            />
+            <Input
+              variant="glass"
+              placeholder="Podnadpis (volitelné)"
+              value={note.subtitle}
+              onChange={(e) => setNote(prev => ({ ...prev, subtitle: e.target.value }))}
+              className="text-muted-foreground"
+            />
+            <Textarea
+              variant="glass"
+              placeholder="Obsah poznámky..."
+              value={note.content}
+              onChange={(e) => setNote(prev => ({ ...prev, content: e.target.value }))}
+              className="min-h-[300px]"
+            />
+            <div className="flex justify-between">
+              <div className="gap-compact flex">
+                <Button onClick={() => navigate('/notes')} variant="outline">
+                  Zrušit
                 </Button>
-              )}
+                {!isNewNote && (
+                  <Button 
+                    onClick={() => deleteMutation.mutate()}
+                    variant="soft-destructive"
+                  >
+                    Smazat
+                  </Button>
+                )}
+              </div>
+              <Button 
+                onClick={() => saveMutation.mutate()}
+                disabled={!note.title}
+                variant={isNewNote ? "soft-success" : "soft-primary"}
+              >
+                {isNewNote ? "Vytvořit" : "Uložit"}
+              </Button>
             </div>
-            <Button 
-              onClick={() => saveMutation.mutate()}
-              disabled={!note.title}
-            >
-              {isNewNote ? "Vytvořit" : "Uložit"}
-            </Button>
           </div>
         </Card>
       </div>
