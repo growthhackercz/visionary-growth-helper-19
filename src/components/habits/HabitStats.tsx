@@ -1,7 +1,7 @@
 
 import { Card } from "@/components/ui/card";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
-import { subDays, format } from 'date-fns';
+import { subDays, format, isValid } from 'date-fns';
 
 interface HabitStatsProps {
   habits: any[];
@@ -13,10 +13,17 @@ export const HabitStats = ({ habits }: HabitStatsProps) => {
     const date = subDays(new Date(), i);
     const formattedDate = format(date, 'dd.MM.yyyy');
     const completedHabits = habits.filter(habit => 
-      habit.habit_progress?.some((p: any) => 
-        format(new Date(p.date), 'dd.MM.yyyy') === formattedDate &&
-        p.status === 'success'
-      )
+      habit.habit_progress?.some((p: any) => {
+        try {
+          const progressDate = new Date(p.date);
+          return isValid(progressDate) && 
+                 format(progressDate, 'dd.MM.yyyy') === formattedDate &&
+                 p.status === 'success';
+        } catch (e) {
+          console.error("Invalid date in habit progress:", p.date);
+          return false;
+        }
+      })
     ).length;
 
     return {
@@ -47,7 +54,10 @@ export const HabitStats = ({ habits }: HabitStatsProps) => {
                 dataKey="date" 
                 stroke="#ffffff60"
                 tick={{ fill: '#ffffff60' }}
-                tickFormatter={(value) => format(new Date(value), 'd.M')}
+                tickFormatter={(value) => {
+                  const parts = value.split('.');
+                  return `${parts[0]}.${parts[1]}`;
+                }}
               />
               <YAxis 
                 stroke="#ffffff60"
@@ -94,4 +104,3 @@ export const HabitStats = ({ habits }: HabitStatsProps) => {
     </Card>
   );
 };
-

@@ -9,7 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Slider } from "@/components/ui/slider";
 import { toast } from "sonner";
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
-import { format } from "date-fns";
+import { format, isValid } from "date-fns";
 import { cs } from "date-fns/locale";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -110,6 +110,16 @@ export const SleepTracker = () => {
     fetchSleepData();
   };
 
+  const safeChartData = sleepData.filter(item => {
+    try {
+      const date = new Date(item.date);
+      return isValid(date);
+    } catch (e) {
+      console.error("Invalid date format in sleep data:", item.date);
+      return false;
+    }
+  });
+
   return (
     <Card className="p-6 backdrop-blur-lg bg-card">
       <div className="flex justify-between items-center mb-6">
@@ -186,11 +196,22 @@ export const SleepTracker = () => {
 
       <div className="h-[300px] w-full">
         <ResponsiveContainer width="100%" height="100%">
-          <AreaChart data={sleepData}>
+          <AreaChart data={safeChartData}>
             <XAxis 
               dataKey="date" 
               stroke="#fff"
-              tickFormatter={(date) => format(new Date(date), 'd. MMM', { locale: cs })}
+              tickFormatter={(dateStr) => {
+                try {
+                  const date = new Date(dateStr);
+                  if (isValid(date)) {
+                    return format(date, 'd. MMM', { locale: cs });
+                  }
+                  return '';
+                } catch (e) {
+                  console.error("Error formatting date:", e);
+                  return '';
+                }
+              }}
             />
             <YAxis stroke="#fff" />
             <Tooltip 
@@ -200,7 +221,18 @@ export const SleepTracker = () => {
                 borderRadius: '8px',
                 color: '#fff'
               }}
-              labelFormatter={(date) => format(new Date(date), 'PPP', { locale: cs })}
+              labelFormatter={(dateStr) => {
+                try {
+                  const date = new Date(dateStr);
+                  if (isValid(date)) {
+                    return format(date, 'PPP', { locale: cs });
+                  }
+                  return 'Neplatné datum';
+                } catch (e) {
+                  console.error("Error formatting date in tooltip:", e);
+                  return 'Neplatné datum';
+                }
+              }}
             />
             <Area 
               type="monotone" 

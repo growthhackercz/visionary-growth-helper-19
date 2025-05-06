@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
-import { format } from "date-fns";
+import { format, isValid } from "date-fns";
 import { cs } from "date-fns/locale";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -115,6 +115,17 @@ export const MoodTracker = () => {
     fetchMoodData();
   };
 
+  const safeChartData = moodData.filter(item => {
+    try {
+      // Validate that this is a proper date
+      const date = new Date(item.date);
+      return isValid(date);
+    } catch (e) {
+      console.error("Invalid date format in mood data:", item.date);
+      return false;
+    }
+  });
+
   return (
     <Card className="p-6 backdrop-blur-lg bg-card">
       <div className="flex justify-between items-center mb-6">
@@ -183,11 +194,22 @@ export const MoodTracker = () => {
 
       <div className="h-[300px] w-full">
         <ResponsiveContainer width="100%" height="100%">
-          <LineChart data={moodData}>
+          <LineChart data={safeChartData}>
             <XAxis 
               dataKey="date" 
               stroke="#fff"
-              tickFormatter={(date) => format(new Date(date), 'd. MMM', { locale: cs })}
+              tickFormatter={(dateStr) => {
+                try {
+                  const date = new Date(dateStr);
+                  if (isValid(date)) {
+                    return format(date, 'd. MMM', { locale: cs });
+                  }
+                  return '';
+                } catch (e) {
+                  console.error("Error formatting date:", e);
+                  return '';
+                }
+              }}
             />
             <YAxis stroke="#fff" />
             <Tooltip 
@@ -197,7 +219,18 @@ export const MoodTracker = () => {
                 borderRadius: '8px',
                 color: '#fff'
               }}
-              labelFormatter={(date) => format(new Date(date), 'PPP', { locale: cs })}
+              labelFormatter={(dateStr) => {
+                try {
+                  const date = new Date(dateStr);
+                  if (isValid(date)) {
+                    return format(date, 'PPP', { locale: cs });
+                  }
+                  return 'Neplatné datum';
+                } catch (e) {
+                  console.error("Error formatting date in tooltip:", e);
+                  return 'Neplatné datum';
+                }
+              }}
             />
             <Line 
               type="monotone" 

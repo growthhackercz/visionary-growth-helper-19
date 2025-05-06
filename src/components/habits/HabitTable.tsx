@@ -1,3 +1,4 @@
+
 import { format } from "date-fns";
 import { Button } from "@/components/ui/button";
 import {
@@ -52,7 +53,14 @@ export const HabitTable = ({
       return progress?.status;
     });
 
-    const rating = dailyRatings?.find(r => format(new Date(r.date), 'dd.MM.yyyy') === date);
+    const rating = dailyRatings?.find(r => {
+      try {
+        return format(new Date(r.date), 'dd.MM.yyyy') === date;
+      } catch (e) {
+        console.error("Invalid date format:", r.date);
+        return false;
+      }
+    });
     
     if (rating) {
       if (rating.rating >= 7) return 'success';
@@ -110,9 +118,15 @@ export const HabitTable = ({
               {date}
             </TableCell>
             {habits?.map((habit) => {
-              const progress = habit.habit_progress?.find((p: any) => 
-                format(new Date(p.date), 'dd.MM.yyyy') === date
-              );
+              const progress = habit.habit_progress?.find((p: any) => {
+                try {
+                  return format(new Date(p.date), 'dd.MM.yyyy') === date;
+                } catch (e) {
+                  console.error("Invalid date format:", p.date);
+                  return false;
+                }
+              });
+              
               return (
                 <TableCell 
                   key={`${habit.id}-${date}`}
@@ -144,7 +158,13 @@ export const HabitTable = ({
             <TableCell className="text-center">
               <div className="flex flex-col items-center gap-2">
                 <div className={`font-['Caveat'] text-lg ${getStatusColor(getDailySummaryStatus(date, habits))}`}>
-                  {dailyRatings?.find(r => format(new Date(r.date), 'dd.MM.yyyy') === date)?.rating || "•"}
+                  {dailyRatings?.find(r => {
+                    try {
+                      return format(new Date(r.date), 'dd.MM.yyyy') === date;
+                    } catch (e) {
+                      return false;
+                    }
+                  })?.rating || "•"}
                 </div>
                 <Select
                   value={selectedRating?.toString()}
