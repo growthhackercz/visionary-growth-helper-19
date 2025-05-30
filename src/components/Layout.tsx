@@ -6,6 +6,7 @@ import { useAuth } from "./AuthProvider";
 import { Button } from "./ui/button";
 import { LogOut, Settings } from "lucide-react";
 import { HabitReminders } from "./habits/HabitReminders";
+import { GlobalSearch } from "./ui/global-search";
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -47,13 +48,16 @@ export function Layout({ children }: LayoutProps) {
         <main className="flex-1 overflow-hidden">
           <div className="h-full overflow-y-auto px-4 py-6 lg:px-8 relative">
             <div className="flex justify-between items-center mb-4 sticky top-0 z-10 backdrop-blur-md bg-secondary/80 py-2 px-4 -mx-4 border-b border-white/5">
-              <div className="text-sm text-white/60">
-                {new Date().toLocaleDateString('cs-CZ', { 
-                  weekday: 'long', 
-                  year: 'numeric', 
-                  month: 'long', 
-                  day: 'numeric' 
-                })}
+              <div className="flex items-center gap-4">
+                <div className="text-sm text-white/60">
+                  {new Date().toLocaleDateString('cs-CZ', { 
+                    weekday: 'long', 
+                    year: 'numeric', 
+                    month: 'long', 
+                    day: 'numeric' 
+                  })}
+                </div>
+                <GlobalSearch />
               </div>
               
               <div className="flex items-center gap-2">

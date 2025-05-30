@@ -5,6 +5,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { DashboardHeader } from "@/components/dashboard/DashboardHeader";
 import { DashboardStats } from "@/components/dashboard/DashboardStats";
+import { DashboardTabs } from "@/components/dashboard/DashboardTabs";
 import { QuickActions } from "@/components/dashboard/QuickActions";
 import { DailyChallenge } from "@/components/dashboard/DailyChallenge";
 import { ChallengeCategories } from "@/components/dashboard/ChallengeCategories";
@@ -100,6 +101,72 @@ const Index = () => {
     }
   ];
 
+  const weeklyData = [
+    { den: 'Po', splněno: 8, body: 120 },
+    { den: 'Út', splněno: 6, body: 90 },
+    { den: 'St', splněno: 7, body: 105 },
+    { den: 'Čt', splněno: 9, body: 135 },
+    { den: 'Pá', splněno: 5, body: 75 },
+    { den: 'So', splněno: 4, body: 60 },
+    { den: 'Ne', splněno: 7, body: 105 },
+  ];
+
+  // Content for different tabs
+  const overviewContent = (
+    <>
+      <GoalsSection 
+        weeklyGoal={goals.weekly}
+        monthlyGoal={goals.monthly}
+        yearlyGoal={goals.yearly}
+        monthlyProgress={goals.monthlyProgress}
+      />
+      <PlanningList />
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <MoodTracker />
+        <SleepTracker />
+      </div>
+    </>
+  );
+
+  const activitiesContent = (
+    <>
+      <QuickActions 
+        categories={categories}
+        showQuickAdd={showQuickAdd}
+        setShowQuickAdd={setShowQuickAdd}
+      />
+      <DailyChallenge />
+      <ChallengeCategories />
+      <DashboardCategories 
+        progressValues={progressValues}
+        isMobile={isMobile}
+      />
+    </>
+  );
+
+  const goalsContent = (
+    <>
+      <GoalsSection 
+        weeklyGoal={goals.weekly}
+        monthlyGoal={goals.monthly}
+        yearlyGoal={goals.yearly}
+        monthlyProgress={goals.monthlyProgress}
+      />
+      <DashboardCalendar />
+      <div className="space-y-6">
+        <AchievementsSection />
+        <RewardsSection />
+      </div>
+    </>
+  );
+
+  const statsContent = (
+    <>
+      <DashboardStats weeklyData={weeklyData} />
+      <DashboardCalendar />
+    </>
+  );
+
   return (
     <Layout>
       <div className="space-y-8 animate-fade-in">
@@ -110,51 +177,12 @@ const Index = () => {
           showDailyMotivation={showDailyMotivation}
         />
 
-        <GoalsSection 
-          weeklyGoal={goals.weekly}
-          monthlyGoal={goals.monthly}
-          yearlyGoal={goals.yearly}
-          monthlyProgress={goals.monthlyProgress}
+        <DashboardTabs
+          overviewContent={overviewContent}
+          activitiesContent={activitiesContent}
+          goalsContent={goalsContent}
+          statsContent={statsContent}
         />
-
-        <PlanningList />
-
-        <QuickActions 
-          categories={categories}
-          showQuickAdd={showQuickAdd}
-          setShowQuickAdd={setShowQuickAdd}
-        />
-
-        <DailyChallenge />
-
-        <ChallengeCategories />
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <MoodTracker />
-          <SleepTracker />
-        </div>
-
-        <DashboardStats weeklyData={[
-          { den: 'Po', splněno: 8, body: 120 },
-          { den: 'Út', splněno: 6, body: 90 },
-          { den: 'St', splněno: 7, body: 105 },
-          { den: 'Čt', splněno: 9, body: 135 },
-          { den: 'Pá', splněno: 5, body: 75 },
-          { den: 'So', splněno: 4, body: 60 },
-          { den: 'Ne', splněno: 7, body: 105 },
-        ]} />
-
-        <DashboardCalendar />
-
-        <DashboardCategories 
-          progressValues={progressValues}
-          isMobile={isMobile}
-        />
-
-        <div className="space-y-6">
-          <AchievementsSection />
-          <RewardsSection />
-        </div>
       </div>
     </Layout>
   );
